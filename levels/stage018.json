@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-018",
+  "index": 18,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_pentagon",
+      "count": 19
+    }
+  },
+  "intro": {
+    "title": "Level 18",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0115,
+    "midClearWeight": 2.96,
+    "scoreFitsNow": 4.84,
+    "scoreAllFit": 8.59,
+    "clearGuaranteeFill": 0.2,
+    "dangerHi": 0.45,
+    "multiClearWeight": 4.83,
+    "sampleCount": 33,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.994,
+    "gemRate": 1.72
+  }
+}

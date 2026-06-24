@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-076",
+  "index": 76,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "score",
+    "target": {
+      "score": 1530
+    }
+  },
+  "intro": {
+    "title": "Level 76",
+    "hint": "Reach 1530 points!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0439,
+    "midClearWeight": 1.8,
+    "scoreFitsNow": 6,
+    "scoreAllFit": 13,
+    "clearGuaranteeFill": 0.1,
+    "dangerHi": 0.56,
+    "multiClearWeight": 6.5,
+    "sampleCount": 56,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.999,
+    "gemRate": 2.52,
+    "surviveProbHi": 0.99
+  }
+}

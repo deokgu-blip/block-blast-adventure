@@ -1,0 +1,2214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>Block Blast — Adventure (POC)</title>
+<style>
+  :root{
+    --bg-top:#f5f7fb; --bg-bottom:#ffffff;       /* WHITE theme (user req ⑬) */
+    --hud-text:#1b2440; --hud-dim:#9fb0d8; --accent:#ffc23d;
+    --tap-min:44px; --safe-t:env(safe-area-inset-top); --safe-b:env(safe-area-inset-bottom);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; overflow:hidden; background:var(--bg-bottom);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    user-select:none; -webkit-user-select:none; touch-action:none; color:var(--hud-text); }
+
+  /* full-window background fills any letterbox (L12/L33: fully uniform, no bands).
+     bg_page.webp (blue gradient) over a matching CSS gradient fallback. The image is
+     a vertical gradient → stretch to cover the whole viewport incl. letterbox; the
+     gradient fallback keeps the sides uniform if the image is wider/narrower. */
+  /* WHITE page background (user req ⑬) — was a blue gradient image. */
+  #bg{ position:fixed; inset:0; z-index:0; background:linear-gradient(180deg,#ffffff,#eef1f7); transition:background .28s ease; }
+  /* STAGE-CLEAR: darken the FULL viewport — including the letterbox margins ABOVE/BELOW the
+     fixed-aspect #stage box — so the result dim reads uniform edge-to-edge. The in-box .wd-dim
+     covers the game area; this matches the margins to the same tone (#stage is a letterboxed
+     box so its own dim can never reach the margins — L12). */
+  body.sc-dim #bg{ background:#0b1022; }
+
+  /* fixed portrait design box, centered (creates containing block for the HUD — L49) */
+  #stage{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:100vw; height:100vh; max-width:56.25vh; max-height:177.78vw;
+    overflow:hidden; z-index:1; display:flex; flex-direction:column;
+  }
+
+  /* GAMEREELS no-top-margin (USER REQ): in reels mode the play area must fill from the
+     VERY TOP — ZERO top gap. Block Blast already has no top safe-area on the play box,
+     so this is a DEFENSIVE guard against any host-injected safe-area-inset-top creeping
+     into the layout (the OPPOSITE of the sibling cube_blast, which adds a 12svh top
+     band). We pin the stage to the top and null the top safe-area inset. Default
+     (non-reels) load is untouched — this block only applies under body.gamereels. */
+  body.gamereels{ --safe-t:0px; }
+  body.gamereels #stage{ top:0; transform:translateX(-50%); }
+  body.gamereels #dev-stage{ top:8px; }
+
+  /* ── top HUD: mission counter + score ── */
+  /* goal HUD: full width (so the goal centers), small bottom gap to the grid below it. No
+     top safe-area padding any more — it's no longer at the screen top (the mute button is). */
+  #hud-top{ position:relative; padding:0 14px 2px; z-index:5; width:100%; }
+  /* the GOAL (score track / gem targets) sits CENTERED just above the grid (reference). */
+  #row1{ display:flex; align-items:center; justify-content:center; }
+  /* mission: one or more gem chips (icon ABOVE remaining count) for collect, or a score/
+     target readout for score missions — all CENTERED in a row (reference layout). */
+  #mission{ display:flex; align-items:center; justify-content:center; gap:22px;
+    font-weight:800; font-size:18px; min-height:48px; }
+  .gem-chip{ display:flex; flex-direction:column; align-items:center; gap:0; }
+  .gem-chip img{ width:40px; height:40px; object-fit:contain; display:block;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.4)); }
+  .gem-chip .count{ font-weight:900; font-size:15px; min-width:18px; text-align:center;
+    color:#44506e; text-shadow:0 1px 1px rgba(255,255,255,.5); margin-top:-2px; }
+  .gem-chip.done .count{ color:#5bd08b; }
+  /* score mission progress (CHANGE 3): a glossy horizontal capsule TRACK whose filled
+     portion + a circular MARKER (current score) move left→right toward a darker TARGET
+     circle at the right end; reaching it (100%) clears the stage (handled by the score
+     mission logic — this is purely the visual). Casual/glossy to match the game. */
+  #mission .score-mission{ display:flex; align-items:center; }
+  /* EMBOSS/ENGRAVE RELIEF (USER REQ 2026-06-22, reference-matched): the progress track + goal are
+     ENGRAVED (음각, sunken dark-navy groove + socket at the SAME depth); the current-score marker is
+     EMBOSSED (양각, a raised bright-blue circle) that rides the groove and SEATS into the goal socket
+     at 100%. Pure CSS (inset/outset shadows) for pixel-exact relief + fill alignment. */
+  .score-track{ position:relative; width:150px; height:20px; border-radius:11px;
+    background:linear-gradient(180deg,#19233f,#243155);
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.55), inset 0 -2px 3px rgba(255,255,255,.06),
+      0 1px 0 rgba(255,255,255,.45); }
+  /* progress FILL — bright amber, ENGRAVED into the same groove; left-aligned to the groove inner edge. */
+  .score-track .fill{ position:absolute; left:3px; top:3px; bottom:3px; width:0%;
+    min-width:12px; border-radius:8px;
+    background:linear-gradient(180deg,#ffe08a,#ffc23d 55%,#ff9d12);
+    box-shadow:inset 0 1px 2px rgba(255,255,255,.55), inset 0 -1px 2px rgba(150,90,0,.4);
+    transition:width .22s ease-out; }
+  /* GOAL socket = ENGRAVED (음각) circle at the right end, SAME dark-navy depth as the groove; orange number. */
+  .score-track .target{ position:absolute; top:50%; right:-13px; width:34px; height:34px;
+    transform:translateY(-50%); border-radius:50%;
+    background:radial-gradient(circle at 50% 42%, #161f38, #232f52 72%, #2a3760);
+    box-shadow: inset 0 3px 6px rgba(0,0,0,.7), inset 0 -2px 3px rgba(255,255,255,.07),
+      0 1px 0 rgba(255,255,255,.4);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:12px; color:#ffc23d; text-shadow:0 1px 1px rgba(0,0,0,.65); z-index:2; }
+  /* CURRENT marker = EMBOSSED (양각) raised bright-blue circle; SAME size as the socket so it SEATS in at 100%. */
+  .score-track .marker{ position:absolute; top:50%; left:0%; width:34px; height:34px;
+    transform:translate(-50%,-50%); border-radius:50%;
+    background:radial-gradient(circle at 38% 28%, #d2ecff, #62b6ff 50%, #2f8fee 100%);
+    border:1.5px solid rgba(255,255,255,.7);
+    box-shadow: 0 3px 6px rgba(0,0,0,.45), inset 0 2px 3px rgba(255,255,255,.75),
+      inset 0 -4px 5px rgba(0,55,130,.45);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:12px; color:#fff; text-shadow:0 1px 1px rgba(0,45,95,.6); z-index:3;
+    transition:left .22s ease-out; }
+  /* legacy single icon path (non-collect/score badge) */
+  #mission .icon{ width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+    font-size:14px; filter:drop-shadow(0 2px 3px rgba(0,0,0,.4)); }
+  #mission .icon.badge{ border-radius:50%; background:#ff5b5b; border:2px solid #fff; width:26px; height:26px; }
+  #mission .icon img{ width:100%; height:100%; object-fit:contain; display:block; }
+  /* the running score number is HIDDEN — the centered goal UI shows progress (the
+     reference has no separate score readout). Kept in the DOM so updateHUD/debug still
+     write to it without a null guard. */
+  #score{ display:none; }
+  #combo{ font-weight:800; font-size:14px; color:#ff8bd0; min-height:16px; text-align:center; }
+
+  /* DEV stage selector (top-right) — quick prev/next browse of the adventure stages.
+     A development tool (not a player feature); compact + semi-transparent. Can be gated
+     behind a flag / removed before store release. */
+  #dev-stage{ position:absolute; top:calc(8px + var(--safe-t)); right:10px; z-index:20;
+    display:none; align-items:center; gap:2px; padding:3px;
+    background:rgba(8,16,40,.5); border-radius:18px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 2px 5px rgba(0,0,0,.35);
+    -webkit-tap-highlight-color:transparent; user-select:none; }
+  #dev-stage button{ border:none; background:transparent; color:#dfe7ff; cursor:pointer;
+    font-weight:800; line-height:1; font-family:inherit; -webkit-tap-highlight-color:transparent; }
+  #dev-prev, #dev-next{ width:30px; height:30px; border-radius:50%; font-size:14px;
+    display:flex; align-items:center; justify-content:center; transition:background .12s ease; }
+  #dev-prev:active, #dev-next:active{ background:rgba(255,255,255,.16); }
+  #dev-prev:disabled, #dev-next:disabled{ opacity:.32; cursor:default; }
+  #dev-label{ min-width:48px; height:30px; padding:0 6px; font-size:13px; border-radius:14px;
+    background:rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; }
+  #dev-label:active{ background:rgba(0,0,0,.4); }
+  #dev-stage.dev-on{ display:flex; }       /* revealed only by the secret 3-tap hotspot */
+  /* invisible secret hotspot (in-game TOP-LEFT corner) — 3 quick taps toggle the dev stage
+     selector. NOTHING is drawn (USER REQ 2026-06-22); it sits over the empty corner so it
+     never blocks gameplay (board/tray are centred + bottom). */
+  #dev-hotspot{ position:absolute; left:0; top:0; width:58px; height:58px; z-index:30; background:transparent; }
+
+  /* ── board area ── */
+  /* board-wrap now stacks the GOAL HUD directly ON TOP of the grid (column), centered as a
+     group, so the goal sits right above the board (user req). */
+  #board-wrap{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px; position:relative; }
+  /* VIVID blocks (user req ⑮): the saturate(1.5) contrast(1.12) boost is now BAKED INTO the
+     block_*.webp sprites (tools bake_filter.mjs) — so the runtime CSS `filter` is REMOVED from the
+     board / tray / drag-ghost surfaces. iOS Safari re-rasterized a CSS-filtered CANVAS on EVERY
+     board redraw during a drag (the dominant per-frame cost on an iPhone 17 Pro: profiling showed
+     a filtered #board added ~20% to the main-frame budget + ~doubled compositing/Layerize work,
+     with the canvas resource re-produced on every ghost transition). The look is identical (the
+     baked sprite matches the browser's CSS-filter output to ~1/255 per channel). */
+  #board{ display:block; touch-action:none; }
+
+  /* ── tray ── */
+  #tray{ display:flex; justify-content:space-around; align-items:center; gap:8px;
+    padding:8px 12px calc(8px + var(--safe-b)); height:140px; }
+  .tray-slot{ flex:1; height:100%; max-width:33%; border-radius:14px; background:rgba(20,30,60,.045);
+    display:flex; align-items:center; justify-content:center; cursor:grab; touch-action:none; }
+  .tray-slot.lifted canvas{ opacity:.25; }
+  .tray-slot canvas{ width:100%; height:100%; } /* ⑮ vivid boost now baked into the block sprites (no runtime filter) */
+  /* FIX C — during the refill-reveal delay the new pieces are hidden + not grabbable;
+     when revealed they pop/fade in so the fresh queue reads as a deliberate beat. */
+  .tray-slot.tray-hidden{ cursor:default; }
+  .tray-slot.tray-hidden canvas{ opacity:0; }
+  .tray-slot canvas{ transition:opacity .18s ease-out, transform .22s cubic-bezier(.2,1.4,.4,1); }
+  .tray-slot.tray-hidden canvas{ transform:scale(.6); }
+
+  /* ── bottom mission progress bar ── */
+  #progress-wrap{ height:14px; margin:0 14px 8px; background:rgba(0,0,0,.25); border-radius:7px; overflow:hidden; position:relative; }
+  #progress-fill{ position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--accent); border-radius:7px; transition:width .15s ease-out; }
+  #progress-label{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#0c1330; }
+
+  /* ── floating drag ghost ── */
+  /* floating held piece: position:fixed on <body> (NOT #stage) so it is NEVER clipped
+     when dragged off the field; moved via GPU transform for a smooth, non-stiff drag. */
+  /* size is set in JS (canvas = piece footprint at board cell size); only style here. */
+  /* ⑮ vivid is now BAKED into the block sprites (the ghost canvas draws the same sprites) →
+     the saturate/contrast filter is REMOVED. The drop-shadow on a CONTINUOUSLY-MOVING element
+     forces iOS Safari to re-rasterize the filtered bitmap EVERY frame of the drag → jank. We keep
+     a SOFT silhouette shadow (the piece is irregular so a box-shadow would shadow the bounding box,
+     not the shape) but TRIM it (smaller blur/offset) so the per-frame re-raster is much cheaper,
+     and the shadow is now its OWN cheap filter (no saturate/contrast chain to re-evaluate). */
+  .drag-ghost{ position:fixed; left:0; top:0; pointer-events:none; z-index:9999;
+    will-change:transform; filter:drop-shadow(0 4px 5px rgba(0,0,0,.38)); }
+
+  /* ── effects layer (API sprite assets; director only places+times — GLOBAL C6/C7) ── */
+  #fx{ position:absolute; inset:0; z-index:40; pointer-events:none; overflow:hidden; }
+  #fx.fx-danger{ box-shadow:inset 0 0 0 6px rgba(255,60,60,.6); animation:dangerPulse .7s ease-out; }
+  @keyframes dangerPulse{ 0%{ box-shadow:inset 0 0 0 2px rgba(255,60,60,.2);} 50%{ box-shadow:inset 0 0 0 10px rgba(255,60,60,.8);} 100%{ box-shadow:inset 0 0 0 6px rgba(255,60,60,0);} }
+  #fx.fx-rescue{ background:radial-gradient(circle,rgba(120,255,200,.35),transparent 60%); animation:rescueFlash .5s ease-out; }
+  @keyframes rescueFlash{ from{ opacity:1;} to{ opacity:0;} }
+
+  /* gold "+score" popup (styled gold text — task: stays styled gold) */
+  .fx-popup{ position:absolute; transform:translate(-50%,-50%); font-weight:900; font-size:20px;
+    color:var(--accent); text-shadow:0 2px 4px rgba(0,0,0,.55), 0 0 8px rgba(255,194,61,.5);
+    animation:popUp .8s ease-out forwards; }
+  @keyframes popUp{ 0%{ opacity:0; transform:translate(-50%,-30%) scale(.6);} 25%{ opacity:1;} 100%{ opacity:0; transform:translate(-50%,-180%) scale(1.05);} }
+
+  /* (DEAD — removed 2026-06-22) .fx-lineglow / -row / -col + @keyframes lineGlow used
+     mix-blend-mode:screen + filter:sepia/hue-rotate (both iOS-hostile). No JS ever creates a
+     .fx-lineglow element any more (the line-clear read is _lineBurst, the sweep is .fx-beam),
+     so this was dead CSS that only risked accidental iOS-hostile reuse. */
+
+  /* line-clear PREVIEW (CHANGE 1 + softened per user 2026-06-18): a SOFT, SUBTLE
+     ORANGE OUTLINE framing the lines a valid held piece WOULD complete, BEFORE
+     release. NOT a fill over the cells (the old white capsule covered the blocks —
+     user disliked it): a rounded-rect BORDER with a GENTLE outer glow and a
+     TRANSPARENT inside, so the blocks stay fully visible. The earlier glow was
+     "too intense" → this version is THINNER (2px), with a much weaker/softer
+     outer glow (smaller spread + lower opacity) and a slower, gentler pulse, so it
+     reads as a light hint rather than a bright bar. Still orange, transparent fill. */
+  .fx-linepreview-layer{ position:absolute; inset:0; pointer-events:none; z-index:1; }
+  /* clearer than before (user asked for MORE visible): a 3px BLOCK-rounded outline with a
+     stronger but still tasteful glow + a livelier pulse. Transparent fill so blocks show. */
+  /* PERF: the pulse now animates ONLY `opacity` (a compositor-only property) instead of
+     `box-shadow` + `border-color` (which re-rasterized the framed region every frame DURING a
+     drag on iOS). The glow/border are set STATICALLY at the mid-bright value so the steady look
+     is preserved; the gentle breathing is the opacity ramp (visually equivalent, GPU-cheap). */
+  .fx-linepreview{ position:absolute; pointer-events:none; background:transparent;
+    border:3px solid #FFC066; border-radius:9px;
+    box-shadow:0 0 11px 1px rgba(255,178,65,.62), inset 0 0 8px 0 rgba(255,178,65,.36);
+    animation:linePreviewPulse 1.1s ease-in-out infinite alternate; }
+  @keyframes linePreviewPulse{
+    from{ opacity:.84; }
+    to{ opacity:1; } }
+  /* CHANGE 3 (per fx_preview_rainbow_2plus.png): a placement that would clear 2+ lines at
+     once frames those lines with a RAINBOW border instead of orange. The rainbow is painted
+     as a gradient on the border RING via a padding/border-box mask (NOT border-image, which
+     ignores border-radius and looked SHARP/angular) → so the corners are now ROUNDED, block-
+     shaped, like the orange one. Brighter glow + a hue rotate make it shimmer. */
+  .fx-linepreview-rainbow{
+    border:3px solid transparent; border-radius:9px;
+    background:linear-gradient(120deg,#ff5d5d,#ffb13d,#ffe93d,#5bd08b,#4fa3ff,#b86bff,#ff5d5d) border-box;
+    -webkit-mask:linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor; mask:linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    mask-composite:exclude;
+    box-shadow:0 0 12px 1px rgba(255,120,200,.6), inset 0 0 8px 0 rgba(140,200,255,.36);
+    animation:linePreviewRainbow 1.4s ease-in-out infinite alternate; }
+  /* PERF: the rainbow border already carries the full spectrum via its gradient; the continuous
+     `filter:hue-rotate` (a per-frame filter re-raster on iOS during a drag) is dropped in favor of
+     an opacity-only shimmer (compositor-only). The multicolor frame still reads as "2+ lines". */
+  @keyframes linePreviewRainbow{
+    0%{ opacity:.9; }
+    100%{ opacity:1; } }
+
+  /* praise banner sprite — SMOOTH glossy-candy entrance (task A): a soft scale-up from
+     ~0.6 with a brief anticipation + ease-out-back OVERSHOOT that settles, an opacity +
+     blur ramp (de-blurs as it lands), a hold, then a gentle rise + fade out. ~1s total.
+     The keyframe is run on its own timeline (linear master timing-function so each cubic-
+     bezier segment shapes its own ease) — no snap-in. */
+  .fx-praise{ position:absolute; left:50%; top:40%; transform:translate(-50%,-50%);
+    width:70%; max-width:300px; height:auto; pointer-events:none; will-change:transform,opacity,filter;
+    filter:drop-shadow(0 6px 12px rgba(0,0,0,.45)); animation:praisePop 1s linear forwards; }
+  @keyframes praisePop{
+    /* anticipation: a hair small + soft, fading up */
+    0%   { opacity:0;  transform:translate(-50%,-50%) scale(.6)  rotate(-5deg);
+           filter:blur(6px) drop-shadow(0 6px 12px rgba(0,0,0,.0)); }
+    12%  { opacity:.85; transform:translate(-50%,-50%) scale(.84) rotate(-2deg);
+           filter:blur(2px) drop-shadow(0 6px 12px rgba(0,0,0,.3)); }
+    /* ease-out-back OVERSHOOT — pops just past full size, glossy + crisp */
+    34%  { opacity:1;  transform:translate(-50%,-53%) scale(1.14) rotate(2deg);
+           filter:blur(0) drop-shadow(0 8px 16px rgba(0,0,0,.45)); }
+    /* settle back to rest (the satisfying "land") */
+    46%  { opacity:1;  transform:translate(-50%,-50%) scale(.98) rotate(-.5deg);
+           filter:blur(0) drop-shadow(0 6px 12px rgba(0,0,0,.45)); }
+    54%  { opacity:1;  transform:translate(-50%,-50%) scale(1)   rotate(0);
+           filter:blur(0) drop-shadow(0 6px 12px rgba(0,0,0,.45)); }
+    /* HOLD at rest */
+    78%  { opacity:1;  transform:translate(-50%,-50%) scale(1)   rotate(0);
+           filter:blur(0) drop-shadow(0 6px 12px rgba(0,0,0,.45)); }
+    /* gentle rise + fade out */
+    100% { opacity:0;  transform:translate(-50%,-74%) scale(1.02) rotate(0);
+           filter:blur(1.5px) drop-shadow(0 6px 12px rgba(0,0,0,.0)); }
+  }
+
+  /* combo label sprite + number badge */
+  .fx-combo{ position:absolute; left:50%; top:30%; transform:translate(-50%,-50%);
+    display:flex; align-items:center; gap:4px; pointer-events:none; animation:comboPop 1s ease-out forwards; }
+  .fx-combo-label{ width:120px; height:auto; filter:drop-shadow(0 4px 8px rgba(0,0,0,.4)); }
+  .fx-combo-x{ font-size:30px; font-weight:900; color:#ffd23d; -webkit-text-stroke:2px #c9601a;
+    text-shadow:0 3px 5px rgba(0,0,0,.5); }
+  @keyframes comboPop{ 0%{ opacity:0; transform:translate(-50%,-50%) scale(.5);} 20%{ opacity:1; transform:translate(-50%,-50%) scale(1.15);} 30%{ transform:translate(-50%,-50%) scale(1);} 75%{ opacity:1;} 100%{ opacity:0; transform:translate(-50%,-66%) scale(1);} }
+
+  /* confetti pool layer + shards (recycled <img>; physics in effects.js, L13) */
+  .fx-confetti-layer{ position:absolute; inset:0; pointer-events:none; }
+  /* PERF (iOS celebration, 2026-06-22): NO per-element filter:drop-shadow. The pooled
+     confetti is up to 64 tiny continuously-MOVING <img>s — a per-element drop-shadow
+     re-rasterizes each one EVERY frame on iOS Safari (off the GPU fast path), the
+     classic stutter source ([[L13]]/L57). These specks are a few px; the shadow was
+     invisible at that size. Transform/opacity only → pure compositor. */
+  .fx-shard{ position:absolute; left:0; top:0; will-change:transform,opacity; }
+
+  /* fragments-in-place + rainbow mini-blocks (CHANGE 2). The fragment is a small cube
+     that briefly HOLDS at the cleared cell, then fades + falls a little (--fy/--fr).
+     The rainbow block pops + tumbles outward to its landing point (--bx/--by/--br).
+     Both are short-lived self-removing <img>s on this layer (no pool — few per clear). */
+  .fx-fragment-layer{ position:absolute; inset:0; pointer-events:none; z-index:1; }
+  /* PERF (iOS celebration, 2026-06-22): NO filter:drop-shadow. A multi-line clear spawns
+     up to ~100 .fx-fragment cubes/sparkles at once (per-cleared-cell burst), ALL animating
+     transform — a per-element drop-shadow forces a per-frame re-raster of every one on iOS
+     Safari (the dominant cost the profile flagged: 102 filtered .fx-fragment at peak).
+     Transform/opacity only now → compositor-only, no main-thread raster. */
+  .fx-fragment{ position:absolute; left:0; top:0; will-change:transform,opacity;
+    transform-origin:center; animation:fragRemain .3s ease-out forwards; }
+  /* QUICK pop IN PLACE: appears small, grows a touch bigger, fades — no fall, no drift. */
+  @keyframes fragRemain{
+    0%{ opacity:0; transform:scale(.4); }
+    25%{ opacity:1; transform:scale(.8); }
+    100%{ opacity:0; transform:scale(1.05); } }
+
+  /* THUMBS-UP reward (USER REQ 2026-06-22 따봉): one small block-colored thumb per placed cell of
+     a gap-correct drop. A tiny icon scales UP from nothing with a quick overshoot, holds, then
+     fades — ~2s total. Per-cell (effects.js positions each to its cell rect); tint is baked into
+     the sprite per block color so this is opacity/scale-only (smooth on phones). */
+  .fx-thumb-layer{ position:absolute; inset:0; pointer-events:none; z-index:4; }
+  .fx-thumb{ position:absolute; left:0; top:0; will-change:transform,opacity; transform-origin:50% 80%;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.28)); animation:thumbPop .8s ease-out forwards; }
+  /* USER REQ 2026-06-22: the 따봉 enters from ABOVE and swings DOWN in a slight ARC (like a hand
+     bringing a thumbs-up down), tilting from a lean into upright, while it pops + then fades (~1s). */
+  @keyframes thumbPop{
+    0%{   opacity:0; transform:translateY(-55%) rotate(-22deg) scale(.3); }
+    20%{  opacity:1; transform:translateY(8%)   rotate(6deg)   scale(1.2); }  /* swing down past, overshoot */
+    34%{            transform:translateY(0)     rotate(0deg)   scale(1.0); }  /* settle upright */
+    60%{  opacity:1; transform:translateY(0)     rotate(0deg)   scale(1.0); } /* brief hold */
+    100%{ opacity:0; transform:translateY(-6%)  rotate(-3deg)  scale(1.06); } /* lift + fade out */ }
+
+  /* CONTAINED LINE-CLEAR BURST (user 2026-06-18): the cleared-line read must stay INSIDE,
+     and FILL, the cleared row/col. effects.js builds ONE .fx-lineburst per cleared line
+     sized to that line's rect; overflow:hidden CLIPS every child to the line, so nothing
+     can spill sideways outside the cleared line (the containment guarantee). Inside it:
+     a BLOCK-COLORED soft glow that fills the line (--glow = the cleared block hue, NOT
+     white) and fades fast, plus many small .fx-fragment cubes + .fx-spark sparkles that
+     pop in place across the FULL line. Self-removing (effects.js). */
+  .fx-lineburst{ position:absolute; pointer-events:none; overflow:hidden;
+    border-radius:7px; --glow:74,150,255; }
+  /* soft block-colored fill glow over the whole line — radial center→edges, fades fast.
+     mix-blend screen keeps it additive over the blocks; tinted to --glow (the block color). */
+  /* PERF (iOS celebration, 2026-06-22): NO mix-blend-mode:screen (off iOS Safari's GPU
+     fast path — it re-reads + recomposites the backdrop each frame). The additive "screen"
+     look is baked into the gradient instead: a bright near-white core + the block-color
+     bloom on a transparent edge reads the same over the dark board WITHOUT the blend mode.
+     The per-frame filter:brightness in the keyframe is also gone (re-raster every frame) —
+     the punch now comes from a brighter start color + scale pop (transform/opacity only). */
+  .fx-lineburst-glow{ position:absolute; inset:0; border-radius:inherit;
+    background:radial-gradient(closest-side,
+      rgba(255,255,255,.95), rgba(var(--glow),.9) 42%, rgba(var(--glow),0) 100%);
+    will-change:opacity,transform;
+    animation:lineBurstGlow .4s ease-out forwards; }
+  /* PUNCHY flash: bright + scale pop at the very start (the "blast"), then a fast fade —
+     reads as a satisfying burst. Transform/opacity ONLY (no per-frame filter re-raster). */
+  @keyframes lineBurstGlow{
+    0%{ opacity:0; transform:scale(.55); }
+    12%{ opacity:1; transform:scale(1.2); }
+    40%{ opacity:.92; transform:scale(1); }
+    100%{ opacity:0; transform:scale(.98); } }
+  /* sparkle accents inside the burst — NO per-element drop-shadow (re-rasters each of the
+     many spark <img>s every frame on iOS). The sprite itself already reads bright. */
+  .fx-lineburst .fx-spark{ }
+  /* line-burst fragments BLAST outward ALONG the line axis (--fbx/--fby set per fragment
+     in JS) — clipped to the line container, so the energetic motion still can't escape the
+     cleared line. This is the "통쾌" upgrade over the static in-place pop. */
+  .fx-lineburst .fx-frag-burst{ animation-name:fragBurst; }
+  @keyframes fragBurst{
+    0%{ opacity:0; transform:translate(0,0) scale(.5) rotate(0); }
+    16%{ opacity:1; transform:translate(calc(var(--fbx,0)*.4),calc(var(--fby,0)*.4)) scale(1.25) rotate(calc(var(--fr,0)*.4)); }
+    100%{ opacity:0; transform:translate(var(--fbx,0),var(--fby,0)) scale(.82) rotate(var(--fr,0)); } }
+  /* 2+ line clear: keep the rainbow FLAVOR but still clipped to the line (no outward burst).
+     The glow shimmers across hues while staying inside the container. */
+  .fx-lineburst-multi .fx-lineburst-glow{
+    background:radial-gradient(closest-side,
+      rgba(255,255,255,.95), rgba(var(--glow),.6) 55%, rgba(var(--glow),0) 100%);
+    animation:lineBurstGlowMulti .5s ease-out forwards; }
+  /* transform/opacity ONLY — the per-frame filter:hue-rotate (re-raster every frame on iOS)
+     is removed; the rainbow flavor of a 2+ clear comes from the RAINBOW WAVE, not this glow. */
+  @keyframes lineBurstGlowMulti{
+    0%{ opacity:0; transform:scale(.9); }
+    22%{ opacity:1; transform:scale(1.04); }
+    100%{ opacity:0; transform:scale(1); } }
+
+  /* RAINBOW SWEEP (task C — the 2+ line clear CENTERPIECE). effects.js (_rainbowWaveBurst)
+     lays ONE rainbow-gradient overlay over the cleared cells' BOUNDING BOX, clipped to it, and
+     SWEEPS it across (transform-only travel) from the placed piece outward, then the box flashes
+     and fades. This REPLACES the old per-cell snapshot wave (one <div>+<img> per cleared cell →
+     ~130 live #fx els on a 6-line clear → frame drops on iPhone, ⑫/2026-06-23). Now the whole
+     centerpiece is a HANDFUL of compositor-only elements + a hard-capped particle spray. */
+  /* the BOX = the cleared region's bounds; overflow:hidden CLIPS the sweep to the cleared cells
+     so it can never bleed onto live blocks. z above the board, below banners. */
+  .fx-rainbowsweep{ position:absolute; pointer-events:none; z-index:2; overflow:hidden;
+    border-radius:6px; }
+  /* THE SWEEP: ONE element with a STATIC pre-baked rainbow linear-gradient (painted once — NO
+     per-frame background-position recompute, so no paint churn). It is sized 2× the box along
+     the travel axis and only its TRANSFORM (translate) + OPACITY animate, both on the GPU
+     compositor fast path — NO filter, NO mix-blend-mode, NO mask (all off iOS Safari's fast
+     path and the cause of the stutter, ⑫). --rs-from/--rs-to (set per-clear in JS) carry the
+     travel start/end so the rainbow enters from the placed piece's side and exits the far edge. */
+  .fx-rs-grad{ position:absolute; top:-20%; left:-20%; width:140%; height:140%;
+    will-change:transform,opacity; opacity:0; }
+  .fx-rs-h{ background:linear-gradient(90deg,
+      #FF3B30 0%, #FF9500 16%, #FFCC00 32%, #34C759 50%, #2E9BFF 66%, #5B5BFF 82%, #A66BFF 100%);
+    animation-name:rsSweepH; }
+  .fx-rs-v{ background:linear-gradient(180deg,
+      #FF3B30 0%, #FF9500 16%, #FFCC00 32%, #34C759 50%, #2E9BFF 66%, #5B5BFF 82%, #A66BFF 100%);
+    animation-name:rsSweepV; }
+  /* travel across the box along the longer axis (transform only). Fades in as it enters and out
+     as it leaves so the rainbow visibly SWEEPS through the cleared lines, not just appears.
+     --rs-from/--rs-to are px offsets set per-clear in JS (signed toward the placed-piece side). */
+  @keyframes rsSweepH{
+    0%{   opacity:0;   transform:translate3d(var(--rs-from,0),0,0); }
+    22%{  opacity:.92; }
+    78%{  opacity:.92; }
+    100%{ opacity:0;   transform:translate3d(var(--rs-to,0),0,0); } }
+  @keyframes rsSweepV{
+    0%{   opacity:0;   transform:translate3d(0,var(--rs-from,0),0); }
+    22%{  opacity:.92; }
+    78%{  opacity:.92; }
+    100%{ opacity:0;   transform:translate3d(0,var(--rs-to,0),0); } }
+  /* FLASH: ONE soft white pulse over the whole box (opacity only) — the "lines flash" beat,
+     with zero per-cell DOM. Brightens as the sweep passes, then fades out. */
+  .fx-rs-flash{ position:absolute; inset:0; will-change:opacity; opacity:0;
+    background:radial-gradient(closest-side, rgba(255,255,255,.85), rgba(255,255,255,.18) 70%, rgba(255,255,255,0) 100%); }
+  @keyframes rsFlash{
+    0%{ opacity:0; }
+    30%{ opacity:.9; }
+    60%{ opacity:.5; }
+    100%{ opacity:0; } }
+
+  /* BOARD SHAKE on clear (juice) — the board canvas jitters briefly; intensity scales with
+     how many lines cleared (1 subtle → 4 punchy). Only the board shakes (HUD/tray steady). */
+  #board{ will-change:transform; }
+  .fx-shake-1{ animation:bbShake1 .2s ease-out; }
+  .fx-shake-2{ animation:bbShake2 .26s ease-out; }
+  .fx-shake-3{ animation:bbShake3 .3s ease-out; }
+  .fx-shake-4{ animation:bbShake4 .34s ease-out; }
+  @keyframes bbShake1{ 0%,100%{transform:translate(0,0)} 30%{transform:translate(.5px,2px)} 65%{transform:translate(-.5px,-1.5px)} }
+  @keyframes bbShake2{ 0%,100%{transform:translate(0,0)} 20%{transform:translate(1px,3px)} 45%{transform:translate(-1.5px,-2.5px)} 72%{transform:translate(1px,1.5px)} }
+  @keyframes bbShake3{ 0%,100%{transform:translate(0,0)} 16%{transform:translate(-2px,4px)} 42%{transform:translate(2.5px,-3.5px)} 68%{transform:translate(-1.5px,2.5px)} }
+  @keyframes bbShake4{ 0%,100%{transform:translate(0,0)} 14%{transform:translate(3px,-5.5px)} 38%{transform:translate(-3.5px,4.5px)} 62%{transform:translate(2.5px,-3px)} 84%{transform:translate(-1.5px,1.5px)} }
+
+  .fx-rainblock{ position:absolute; left:0; top:0; will-change:transform,opacity;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,.4)); transform-origin:center;
+    animation:rainBlockPop .76s cubic-bezier(.18,.7,.3,1) forwards; }
+  @keyframes rainBlockPop{
+    0%{ opacity:0; transform:translate(0,0) scale(.4) rotate(0); }
+    22%{ opacity:1; transform:translate(calc(var(--bx,0)*.5),calc(var(--by,0)*.5)) scale(1.18) rotate(calc(var(--br,0)*.5)); }
+    100%{ opacity:0; transform:translate(var(--bx,0),var(--by,0)) scale(1) rotate(var(--br,0)); } }
+
+  /* flying collect gems: <img> tweened (JS) from the cleared cell up to the mission
+     counter chip; the DISPLAYED count ticks down on arrival (effects.js _collectGems). */
+  .fx-gemfly-layer{ position:absolute; inset:0; pointer-events:none; z-index:2; }
+  .fx-gemfly{ position:absolute; left:0; top:0; will-change:transform,opacity;
+    filter:drop-shadow(0 3px 5px rgba(0,0,0,.45)); }
+  /* tiny pop on the counter chip when a gem arrives (count just changed) */
+  .gem-chip.arrive img{ animation:gemChipPop .3s ease-out; }
+  @keyframes gemChipPop{ 0%{ transform:scale(1);} 40%{ transform:scale(1.35);} 100%{ transform:scale(1);} }
+  /* score-bar MARKER pulse when a +N fly LANDS (the points "arrive") */
+  .score-track .marker.arrive{ animation:scoreMarkerPop .26s ease-out; }
+  @keyframes scoreMarkerPop{ 0%{ transform:translate(-50%,-50%) scale(1);} 45%{ transform:translate(-50%,-50%) scale(1.32);} 100%{ transform:translate(-50%,-50%) scale(1);} }
+
+  /* ── GOAL-CONFIRM beat (user req 2026-06-18): a clean, satisfying "goal met!" emphasis on
+     the goal HUD that plays AFTER the goal juice and BEFORE the stage-clear grid sweep — so
+     the player clearly registers the clear. #mission (the score track OR the gem chips) pops
+     + glows; a ✓ stamp pops over it; gem chips flash "done". All self-removed after the beat. */
+  #mission.goal-confirm{ animation:goalConfirmPop .82s cubic-bezier(.22,1.4,.4,1) both; }
+  @keyframes goalConfirmPop{
+    0%{ transform:scale(1); filter:drop-shadow(0 0 0 rgba(255,224,120,0)); }
+    28%{ transform:scale(1.18); filter:drop-shadow(0 0 16px rgba(255,224,120,.95)); }
+    52%{ transform:scale(1.05); filter:drop-shadow(0 0 9px rgba(255,224,120,.55)); }
+    100%{ transform:scale(1); filter:drop-shadow(0 0 0 rgba(255,224,120,0)); } }
+  .gem-chip.confirm{ animation:goalChipFlash .72s ease-out both; }
+  @keyframes goalChipFlash{ 0%{ filter:brightness(1);} 35%{ filter:brightness(1.85) drop-shadow(0 0 10px rgba(120,255,170,.9));} 100%{ filter:brightness(1);} }
+  /* ✓ stamp — left/top are set INLINE (centered on the score circle / gem icon, user req ⑧);
+     transform centers it on that point. */
+  .goal-check{ position:absolute; transform:translate(-50%,-50%) scale(.3);
+    font-size:30px; font-weight:900; color:#2bd472; opacity:0; pointer-events:none; z-index:7;
+    text-shadow:0 2px 6px rgba(0,0,0,.45), 0 0 18px rgba(120,255,170,.95);
+    animation:goalCheckPop .82s cubic-bezier(.22,1.5,.4,1) both; }
+  @keyframes goalCheckPop{
+    0%{ opacity:0; transform:translate(-50%,-50%) scale(.3); }
+    30%{ opacity:1; transform:translate(-50%,-50%) scale(1.25); }
+    62%{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+    100%{ opacity:1; transform:translate(-50%,-50%) scale(1); } }   /* ㊼ HOLD the ✓ (persists till stage advances) */
+
+  /* ── SCORE-GAIN "+N" popups (score/combo stages) — tiered by gain magnitude ──
+     A "+N" pops at the gain spot (POP keyframe scaled by tier), holds, then a JS rAF
+     tween flies it INTO the top score-bar marker (shrinking + fading). The layer sits
+     ABOVE the gem-fly layer. Each tier is visibly DIFFERENT (size + glow + pop) so the
+     player reads how big the gain was: place < t1 < t2 < t3 < t4. Glossy-candy vibe to
+     match the blocks / the "Good" praise banners. */
+  .fx-scoregain-layer{ position:absolute; inset:0; pointer-events:none; z-index:3; }
+  .fx-scoregain{ position:absolute; transform:translate(-50%,-50%); font-weight:900;
+    color:#ffd23d; -webkit-text-stroke:1.5px #c9601a; paint-order:stroke fill;
+    letter-spacing:.5px;
+    text-shadow:0 2px 4px rgba(0,0,0,.55), 0 0 8px rgba(255,194,61,.55);
+    will-change:transform,opacity; white-space:nowrap; line-height:1; }
+  /* during the FLIGHT the JS owns transform/left/top — kill the pop animation so it
+     doesn't fight the tween, and trim the heavy glow as it shrinks into the bar. */
+  .fx-scoregain.fx-sg-flying{ animation:none !important; }
+  /* PLACE — tiny + subtle (a plain block drop) */
+  .fx-sg-place{ font-size:16px; -webkit-text-stroke-width:1px;
+    animation:sgPop .2s ease-out; }
+  /* T1 — 1-line clear, medium */
+  .fx-sg-t1{ font-size:22px; animation:sgPop .22s ease-out; }
+  /* T2 — 2-line clear, bigger + warm glow */
+  .fx-sg-t2{ font-size:30px; color:#ffe08a;
+    text-shadow:0 2px 5px rgba(0,0,0,.55), 0 0 12px rgba(255,170,40,.75);
+    animation:sgPopBig .26s cubic-bezier(.2,1.5,.4,1); }
+  /* T3 — 3-line clear, large + colored cyan glow */
+  .fx-sg-t3{ font-size:40px; color:#bff3ff; -webkit-text-stroke:2px #1f7fa8;
+    text-shadow:0 3px 6px rgba(0,0,0,.5), 0 0 18px rgba(90,200,255,.9);
+    animation:sgPopBig .3s cubic-bezier(.2,1.6,.35,1); }
+  /* T4 — 4+/huge, biggest + rainbow flair + extra spin-pop */
+  .fx-sg-t4{ font-size:52px; color:#fff; -webkit-text-stroke:2.5px rgba(120,40,160,.9);
+    background:linear-gradient(90deg,#ff5c5c,#ffb43a,#ffe23d,#5ad27a,#5aa0ff,#b06bff);
+    -webkit-background-clip:text; background-clip:text;
+    text-shadow:0 0 22px rgba(255,120,220,.9), 0 4px 8px rgba(0,0,0,.5);
+    animation:sgPopHuge .36s cubic-bezier(.2,1.7,.3,1); }
+  @keyframes sgPop{ 0%{ opacity:0; transform:translate(-50%,-50%) scale(.5);} 50%{ opacity:1; transform:translate(-50%,-50%) scale(1.12);} 100%{ opacity:1; transform:translate(-50%,-50%) scale(1);} }
+  @keyframes sgPopBig{ 0%{ opacity:0; transform:translate(-50%,-50%) scale(.4);} 55%{ opacity:1; transform:translate(-50%,-50%) scale(1.25);} 100%{ opacity:1; transform:translate(-50%,-50%) scale(1);} }
+  @keyframes sgPopHuge{ 0%{ opacity:0; transform:translate(-50%,-50%) scale(.3) rotate(-8deg);} 45%{ opacity:1; transform:translate(-50%,-50%) scale(1.35) rotate(4deg);} 70%{ transform:translate(-50%,-50%) scale(1.05) rotate(-1deg);} 100%{ opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0);} }
+  /* 3+ line clears: while the number COUNTS UP (1 → value), it heartbeats so it reads big &
+     alive; the pulse stops the instant it starts flying (.fx-sg-flying). */
+  .fx-scoregain.fx-sg-countup:not(.fx-sg-flying){ animation:sgCountPulse .22s ease-in-out infinite alternate; }
+  @keyframes sgCountPulse{ 0%{ opacity:1; transform:translate(-50%,-50%) scale(1);} 100%{ opacity:1; transform:translate(-50%,-50%) scale(1.16);} }
+
+  /* (stage-clear celebration is the SEQUENCE built in #fx by effects.js — see the
+     .fx-stageclear-layer / .fx-welldone styles further down. The old popup card
+     (panel/burst/STAGE-CLEAR title/3-star rating) was superseded and removed;
+     effects._stageClear() is a no-op — the host drives playStageClear().) */
+
+  /* game-over banner (fallback text overlay). z-index:10 so the DIM sits ABOVE the board FILL
+     (㉑) — .fx-fragment-layer has its own z:1 context, so without this the fill blocks popped
+     IN FRONT of the dim. A lighter dim so the filled board reads through it. */
+  .fx-banner{ position:absolute; inset:0; z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:rgba(8,14,40,.72); pointer-events:auto; animation:fade .25s ease-out; }
+  .fx-banner-title{ font-size:34px; font-weight:900; color:var(--accent); }
+  .fx-banner.fx-fail .fx-banner-title{ color:#ff6b6b; }
+  .fx-banner-sub{ font-size:16px; color:var(--hud-dim); margin-top:6px; }
+  .fx-banner::after{ content:'Tap to restart'; position:absolute; bottom:18%; font-size:13px; color:var(--hud-dim); }
+  /* ⑩ game-over: empty board cells FILL IN rising from the bottom (opacity/transform only →
+     smooth), then "No Space Left" sits in the tray area while the queue is cleared. */
+  .fx-gameover-fill{ position:absolute; inset:0; pointer-events:none; z-index:3; }
+  .fx-go-block{ position:absolute; opacity:0; will-change:transform,opacity; }
+  @keyframes goBlockPop{ 0%{ opacity:0; transform:translateY(55%);} 60%{ opacity:1;} 100%{ opacity:1; transform:translateY(0);} }
+  #tray{ position:relative; }
+  #no-space{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:26px; font-weight:900; letter-spacing:.5px; color:rgba(40,52,84,.4);
+    text-shadow:0 1px 1px rgba(255,255,255,.6); pointer-events:none; z-index:6; animation:fade .3s ease-out; }
+  @keyframes fade{ from{opacity:0;} to{opacity:1;} }
+
+  /* ── onboarding tutorial (PLACEHOLDER look — replaced by API assets later (GLOBAL C6/C7)) ── */
+  #tut{ position:absolute; inset:0; z-index:45; pointer-events:none; display:none; }
+  /* (dim overlay removed per user — keep only the banner + hand, no darkening) */
+  #tut-dim{ position:absolute; inset:0; background:transparent; }
+  /* instruction banner near the top of the board area */
+  #tut-banner{ position:absolute; left:50%; top:13%; transform:translateX(-50%);
+    max-width:84%; padding:10px 18px; border-radius:18px; text-align:center;
+    background:linear-gradient(180deg,#2a3b66,#1a2748); border:2px solid #4a63a8;
+    color:#fff; font-weight:800; font-size:16px; line-height:1.25;
+    box-shadow:0 6px 18px rgba(0,0,0,.45); animation:tutBannerIn .25s ease-out; }
+  #tut-banner::after{ content:''; position:absolute; left:50%; bottom:-9px; transform:translateX(-50%);
+    border:8px solid transparent; border-top-color:#1a2748; }
+  @keyframes tutBannerIn{ from{ opacity:0; transform:translate(-50%,-6px) scale(.9);} to{ opacity:1; } }
+  /* animated finger pointer: API hand sprite (ui_hand.webp). Same animation path as
+     before (tutorial.js drives #tut-finger transform); the hand img is anchored at
+     its fingertip (top-center) so it points at the target. A press pulse ring fires
+     on the .tut-finger-press class. */
+  #tut-finger{ position:absolute; left:0; top:0; width:54px; height:54px; margin:-6px 0 0 -16px;
+    display:none; will-change:transform; }
+  #tut-finger .hand{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain;
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,.45)); }
+  #tut-finger .ring{ position:absolute; left:50%; top:6px; width:30px; height:30px; margin:-15px 0 0 -15px;
+    border-radius:50%; border:3px solid rgba(255,255,255,.85); box-shadow:0 0 0 4px rgba(80,140,255,.35); opacity:0; }
+  #tut-finger.tut-finger-press .ring{ animation:tutPress .35s ease-out; }
+  @keyframes tutPress{ 0%{ transform:scale(.6); opacity:.9;} 100%{ transform:scale(1.6); opacity:0;} }
+  /* highlight the active tray slot during the tutorial */
+  .tray-slot.tut-hi{ box-shadow:0 0 0 3px var(--accent), 0 0 18px rgba(255,194,61,.6);
+    background:rgba(255,194,61,.12); animation:tutHi 1.1s ease-in-out infinite; }
+  @keyframes tutHi{ 0%,100%{ box-shadow:0 0 0 3px var(--accent), 0 0 14px rgba(255,194,61,.45);} 50%{ box-shadow:0 0 0 3px var(--accent), 0 0 24px rgba(255,194,61,.8);} }
+
+  /* ── STAGE-CLEAR SEQUENCE (redesign 2026-06-18) — replaces the old popup card. The
+     grid sweep + Well Done layer DOM is built inside #fx by effects.js (playStageClear);
+     these are the styles for those classes. #next-wrap is now an INVISIBLE state marker
+     (no visible card, no dim backdrop): the host toggles `.show` on it while the Well
+     Done layer is up so QA/solver can detect the sequence via the same SSOT selector.
+     The #next-btn lives in #next-wrap at rest and is MOUNTED into the Well Done layer
+     after the text reveal. Advancement stays BUTTON-ONLY (NEXT runs gotoStage). */
+  #next-wrap{ position:absolute; width:0; height:0; overflow:hidden; pointer-events:none; }
+  #next-wrap.show{ /* state marker only — the visuals live in the #fx Well Done layer */ }
+
+  /* (1) GRID SWEEP — a traveling neon glow over each board cell, row by row, alternating
+     direction (driven by timed spawns in effects.js). Each cell uses the fx_lineglow
+     sprite tinted neon-cyan/blue (matches clear_grid_sweep.png), screen-blended additive
+     over the board, popping in then fading out. */
+  .fx-stageclear-layer{ position:absolute; inset:0; pointer-events:none; z-index:50; }
+  .fx-sweep-layer{ position:absolute; inset:0; pointer-events:none; }
+  /* SOFTENED (user req ⑱: the clear "빛줄기" hurt the eyes) — much lower peak opacity + no
+     brightness boost + gentler saturation; dropped the screen blend (harsh on the white board). */
+  .fx-sweep-cell{ position:absolute; pointer-events:none; object-fit:fill;
+    filter:sepia(1) saturate(3) hue-rotate(150deg) brightness(1.0);
+    animation:sweepGlow .36s ease-out forwards; }
+  @keyframes sweepGlow{ 0%{ opacity:0; transform:scale(.86);} 30%{ opacity:.38; transform:scale(1.04);} 100%{ opacity:0; transform:scale(1);} }
+
+  /* ㊹ VIVID 가로세로 SWEEP BEAMS (USER REQ 2026-06-19 "색감 훨씬 진하게 + 그리드 높이 채움"):
+     full-WIDTH row beams + full-HEIGHT column beams that fill the grid. Deep saturated colour
+     (cyan/blue 가로, violet/cyan 세로) at high opacity + a soft glow — punchy, not the faint
+     per-cell glow. Fired at the last placement (effects.playSweep). */
+  .fx-beam{ position:absolute; pointer-events:none; border-radius:4px; opacity:0; will-change:opacity,transform; }
+  .fx-beam-h{ background:linear-gradient(90deg, rgba(0,209,255,0), rgba(0,209,255,.92) 16%, rgba(64,132,255,.96) 50%, rgba(0,209,255,.92) 84%, rgba(0,209,255,0));
+    box-shadow:0 0 18px 4px rgba(0,196,255,.55); animation:beamH .52s ease-out forwards; }
+  .fx-beam-v{ background:linear-gradient(180deg, rgba(150,84,255,0), rgba(150,84,255,.92) 16%, rgba(0,209,255,.96) 50%, rgba(150,84,255,.92) 84%, rgba(150,84,255,0));
+    box-shadow:0 0 18px 4px rgba(130,120,255,.5); animation:beamV .52s ease-out forwards; }
+  @keyframes beamH{ 0%{ opacity:0; transform:scaleX(.55);} 22%{ opacity:.88;} 100%{ opacity:0; transform:scaleX(1);} }
+  @keyframes beamV{ 0%{ opacity:0; transform:scaleY(.55);} 22%{ opacity:.9;} 100%{ opacity:0; transform:scaleY(1);} }
+
+  /* ㊻ WIN-CLEAR CHOREOGRAPHY: (at placement) blocks fall + confetti → horizontal rainbow zigzag → result */
+  .fx-win-layer{ position:absolute; inset:0; pointer-events:none; }
+  /* B1) the cleared blocks tumble DOWN past the board */
+  .fx-winfall{ position:absolute; pointer-events:none; transform-origin:center; will-change:transform,opacity;
+    animation:winFall .64s cubic-bezier(.4,.08,.7,1) forwards; }
+  @keyframes winFall{ 0%{ transform:translate(0,0) rotate(0); opacity:1;} 12%{ opacity:1;} 100%{ transform:translate(var(--tx),var(--fall)) rotate(var(--rot)); opacity:0;} }
+  /* B2) confetti raining from the top over the board */
+  .fx-win-rain{ position:absolute; overflow:hidden; pointer-events:none; }
+  .fx-win-shard{ position:absolute; left:0; top:0; will-change:transform; }
+  /* C) zigzag RAINBOW beams (recolour of the fx-beam gradient per --hue) + a glowing frame */
+  .fx-rzig-frame{ position:absolute; pointer-events:none; border-radius:14px;
+    box-shadow:0 0 24px 7px rgba(120,180,255,.75), inset 0 0 20px 5px rgba(170,120,255,.6);
+    animation:rzigFrame .72s ease-out forwards; }
+  @keyframes rzigFrame{ 0%{ opacity:0;} 16%{ opacity:1;} 100%{ opacity:0;} }
+  .fx-beam-rb.fx-beam-h{ background:linear-gradient(90deg, hsla(var(--hue),95%,58%,0), hsla(var(--hue),95%,58%,.95) 50%, hsla(var(--hue),95%,58%,0)) !important;
+    box-shadow:0 0 16px 3px hsla(var(--hue),95%,60%,.55) !important; }
+  .fx-beam-rb.fx-beam-v{ background:linear-gradient(180deg, hsla(var(--hue),95%,58%,0), hsla(var(--hue),95%,58%,.9) 50%, hsla(var(--hue),95%,58%,0)) !important;
+    box-shadow:0 0 12px 2px hsla(var(--hue),95%,60%,.4) !important; }
+
+  /* (2) WELL DONE layer — an overlay ON the board (NOT a card). Fades in after the sweep;
+     holds the Lv badges + bar at the top, confetti raining from the top, decorative
+     center gems, and the "Well Done!" banner revealed left→right. */
+  .fx-welldone{ position:absolute; inset:0; pointer-events:none; opacity:0;
+    transition:opacity .25s ease-out; }
+  .fx-welldone.show{ opacity:1; }
+  /* full-screen DIM backdrop — only the celebration (badges/gems/text/confetti/button)
+     rises above it (task #3). pointer-events:auto so taps on the dimmed game are blocked. */
+  .wd-dim{ position:absolute; inset:0; z-index:0; background:rgba(6,10,24,.82); pointer-events:auto; }
+
+  /* top: Lv.N badge (left) — progress bar — Lv.N+1 badge (right), near the top. */
+  .wd-top{ position:absolute; left:6%; right:6%; top:13%; z-index:2;
+    display:flex; align-items:center; gap:8px; }
+  .wd-lv{ flex:0 0 auto; padding:5px 12px; border-radius:13px; white-space:nowrap;
+    font-weight:900; font-size:15px; color:#fff;
+    background:linear-gradient(180deg,#5b8cff,#3a63d8);
+    border:2px solid rgba(255,255,255,.85);
+    box-shadow:0 3px 7px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.45);
+    text-shadow:0 2px 3px rgba(0,0,0,.4); }
+  .wd-lv.wd-lv-complete{ background:linear-gradient(180deg,#ffd86b,#ffae1f); color:#5a3700; }
+  .wd-lv.blink{ animation:wdBlink 1s ease-in-out infinite; }
+  @keyframes wdBlink{ 0%,100%{ filter:brightness(1);} 50%{ filter:brightness(1.5);} }
+  /* the rapid-fill progress bar (empty → 100% in BAR_FILL ms, then FLASH at full). */
+  .wd-bar{ flex:1 1 auto; position:relative; height:18px; border-radius:10px;
+    background:linear-gradient(180deg,rgba(8,16,40,.6),rgba(8,16,40,.35));
+    border:2px solid rgba(255,255,255,.55);
+    box-shadow:inset 0 2px 4px rgba(0,0,0,.5); overflow:hidden; }
+  /* while filling: PURPLE (task #4). */
+  .wd-fill{ position:absolute; left:0; top:0; bottom:0; width:0%;
+    border-radius:8px; background:linear-gradient(180deg,#d7a6ff,#9b4dff 60%,#7a2bff);
+    box-shadow:inset 0 1px 2px rgba(255,255,255,.5), 0 0 8px rgba(150,80,255,.7);
+    transition:width .46s cubic-bezier(.3,1,.5,1); }
+  .wd-bar.flash{ animation:wdBarFlash .26s ease-out; }
+  @keyframes wdBarFlash{ 0%{ box-shadow:inset 0 2px 4px rgba(0,0,0,.5), 0 0 0 0 rgba(255,235,150,0);}
+    40%{ box-shadow:inset 0 0 0 0 #fff, 0 0 22px 8px rgba(255,235,150,.95);}
+    100%{ box-shadow:inset 0 2px 4px rgba(0,0,0,.5), 0 0 0 0 rgba(255,235,150,0);} }
+  /* at full: the fill cycles orange→red→blue→green→purple, BLINKING (bright pulse) at
+     each step, and ENDS on purple (task #4). steps(1,end) → crisp color changes. */
+  .wd-bar.cycle .wd-fill{ animation:wdFillCycle .7s steps(1,end) forwards; }
+  @keyframes wdFillCycle{
+    0%  { background:linear-gradient(180deg,#ffd27a,#ff9d12 60%,#ff7a00); filter:brightness(1.9); }
+    10% { filter:brightness(1); }
+    20% { background:linear-gradient(180deg,#ff9a9a,#ff4d4d 60%,#e62e2e); filter:brightness(1.9); }
+    30% { filter:brightness(1); }
+    40% { background:linear-gradient(180deg,#9ec2ff,#4d8bff 60%,#2e6be6); filter:brightness(1.9); }
+    50% { filter:brightness(1); }
+    60% { background:linear-gradient(180deg,#a7e8a8,#4dd06b 60%,#2eb84f); filter:brightness(1.9); }
+    70% { filter:brightness(1); }
+    80% { background:linear-gradient(180deg,#d7a6ff,#9b4dff 60%,#7a2bff); filter:brightness(1.9); }
+    100%{ background:linear-gradient(180deg,#d7a6ff,#9b4dff 60%,#7a2bff); filter:brightness(1); } }
+
+  /* confetti raining from the TOP across the WHOLE width (recycled pool in effects.js). */
+  .wd-rain{ position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+  /* PERF (iOS celebration, 2026-06-22): NO drop-shadow — the Well-Done rain is a 40-element
+     pool that falls continuously for the whole result screen; a per-element shadow re-rasters
+     each one every frame on iOS. Transform-only → compositor-only (same as .fx-shard). */
+  .wd-shard{ position:absolute; left:0; top:0; display:none; will-change:transform; }
+
+  /* decorative center gems (blue diamond, red star, purple starburst — pop in). */
+  .wd-gems{ position:absolute; left:50%; top:42%; transform:translate(-50%,-50%); z-index:2;
+    width:62%; display:flex; align-items:center; justify-content:center; gap:4%; }
+  .wd-gem{ width:26%; height:auto; opacity:0; transform:scale(.3) rotate(-12deg);
+    filter:drop-shadow(0 4px 7px rgba(0,0,0,.4)); }
+  .wd-gem-gem_diamond{ width:34%; margin-bottom:8%; } /* center gem a touch bigger/higher */
+  .wd-gems.show .wd-gem{ animation:wdGemPop .38s cubic-bezier(.2,1.7,.4,1) forwards; }
+  .wd-gems.show .wd-gem-gem_diamond{ animation-delay:.06s; }
+  .wd-gems.show .wd-gem-gem_star6{ animation-delay:.12s; }
+  @keyframes wdGemPop{ 0%{ opacity:0; transform:scale(.3) rotate(-12deg);} 60%{ opacity:1; transform:scale(1.18) rotate(5deg);} 100%{ opacity:1; transform:scale(1) rotate(0);} }
+
+  /* "Well Done!" as PER-LETTER text (task #4) — each char pops small→big, staggered
+     (animation-delay set inline per char). Replaces the old single-image banner wipe. */
+  .wd-text{ position:absolute; left:0; right:0; top:58%; z-index:2; text-align:center;
+    pointer-events:none; font-weight:900; font-size:40px; letter-spacing:1px; color:#eaf3ff;
+    text-shadow:0 3px 0 rgba(40,90,200,.6), 0 7px 16px rgba(0,0,0,.5); }
+  .wd-char{ display:inline-block; opacity:0; transform:scale(.2); transform-origin:center; }
+  .wd-text.reveal .wd-char{ animation:wdCharPop .34s cubic-bezier(.2,1.7,.4,1) both; }
+  @keyframes wdCharPop{ 0%{ opacity:0; transform:scale(.2);} 55%{ opacity:1; transform:scale(1.28);} 100%{ opacity:1; transform:scale(1);} }
+
+  /* button slot near the bottom (lowered per task #4); #next-btn mounts here last. */
+  .wd-btnslot{ position:absolute; left:50%; bottom:9%; transform:translateX(-50%); z-index:3;
+    display:flex; justify-content:center; pointer-events:none; }
+  /* glossy "Next Stage" button — hidden until effects.js adds .sc-show (after the wipe). */
+  #next-btn{ padding:12px 38px; border:none; border-radius:24px;
+    background:linear-gradient(180deg,#ffd86b,#ffb01f); color:#3a2600; font-weight:900; font-size:18px;
+    cursor:pointer; pointer-events:auto; white-space:nowrap;
+    box-shadow:0 6px 0 #c9871a, 0 10px 18px rgba(0,0,0,.4);
+    opacity:0; transform:translateY(14px) scale(.85); }
+  #next-btn.sc-show{ animation:btnIn .4s cubic-bezier(.2,1.5,.4,1) both; }
+  #next-btn:active{ transform:translateY(3px); box-shadow:0 3px 0 #c9871a, 0 6px 12px rgba(0,0,0,.4); }
+  @keyframes btnIn{ from{ opacity:0; transform:translateY(14px) scale(.85);} to{ opacity:1; transform:translateY(0) scale(1);} }
+</style>
+</head>
+<body>
+  <div id="bg"></div>
+  <div id="stage">
+    <!-- invisible secret hotspot: 3 quick taps in the in-game top-left corner toggle the
+         dev stage selector (hidden by default, no on-screen hint — USER REQ 2026-06-22). -->
+    <div id="dev-hotspot" aria-hidden="true"></div>
+    <!-- DEV stage selector (top-right): prev / current / next to quickly browse stages.
+         Hidden until the secret hotspot reveals it. Wired to the same gotoStage(). -->
+    <div id="dev-stage" aria-label="Stage selector (dev)">
+      <button id="dev-prev" title="Previous stage" aria-label="Previous stage">◀</button>
+      <button id="dev-label" title="Tap to jump to a stage">Lv.1</button>
+      <button id="dev-next" title="Next stage" aria-label="Next stage">▶</button>
+    </div>
+
+    <!-- the goal HUD lives INSIDE board-wrap, DIRECTLY ABOVE the grid (user req: attach
+         the goal UI to the top of the grid, much lower than the screen top). -->
+    <div id="board-wrap">
+      <div id="hud-top">
+        <div id="row1">
+          <div id="mission"></div>
+          <div id="score">0</div>
+        </div>
+        <div id="combo"></div>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="tray">
+      <div class="tray-slot" data-i="0"><canvas></canvas></div>
+      <div class="tray-slot" data-i="1"><canvas></canvas></div>
+      <div class="tray-slot" data-i="2"><canvas></canvas></div>
+    </div>
+
+    <div id="fx"></div>
+
+    <!-- onboarding tutorial overlay (PLACEHOLDER look — replaced by API assets later (GLOBAL C6/C7)) -->
+    <div id="tut">
+      <div id="tut-dim"></div>
+      <div id="tut-banner"></div>
+      <div id="tut-finger"><div class="ring"></div><img class="hand" src="assets/sprites/ui_hand.webp" alt="" draggable="false"></div>
+    </div>
+
+    <!-- adventure progression: the STAGE-CLEAR SEQUENCE (grid sweep → Well Done layer →
+         Next button) is built INSIDE #fx by effects.js (playStageClear). #next-wrap is
+         kept as an INVISIBLE state marker (SSOT selector QA/solver toggle `.show` on)
+         so harnesses can detect "the Well Done layer is up" without a visible card. The
+         #next-btn lives here at rest and is MOUNTED into the Well Done layer (after the
+         text reveal) by effects.js, then detached back on teardown. Advancement is
+         BUTTON-ONLY (NEXT runs gotoStage — no auto-advance). The old popup card (panel/
+         burst/STAGE-CLEAR title/3-star rating) was removed per the redesign. -->
+    <div id="next-wrap"><button id="next-btn">Next Stage</button></div>
+  </div>
+
+<script type="module">
+import { validateLevel } from './engine/schema.js?v=20260624123400';
+import { makeRng } from './engine/rng.js?v=20260624123400';
+import { Game } from './engine/game.js?v=20260624123400';
+import { Renderer, gemFileFor } from './engine/renderer.js?v=20260624123400';
+import { EffectsDirector } from './engine/effects.js?v=20260624123400';
+import { DragInput } from './engine/input.js?v=20260624123400';
+import { TutorialController } from './engine/tutorial.js?v=20260624123400';
+import { feedTray, setMaxClear } from './engine/feeder.js?v=20260624123400';
+import { Board } from './engine/board.js?v=20260624123400';
+import { DEFAULT_CONFIG, mergeConfig } from './engine/config.js?v=20260624123400';
+import { getAudio } from './engine/audio.js?v=20260624123400';
+// GAMEREELS feature layer (additive; NO-OP on the default path — GR.active is false
+// unless ?gamereels / window.__GAMEREELS). GR = host postMessage bridge, haptic() =
+// unified buzz (host signal + web fallback), RT = runtime config (from/to/loop/dev,
+// read from the URL once). See engine/hostbridge.js + DEPLOY-CONFIG.md.
+import { GR, haptic, RT } from './engine/hostbridge.js?v=20260624123400';
+
+// ── AUDIO (JOB 1, GLOBAL L22): a Web Audio manager that decodes the MP3 SFX/BGM
+// off the critical path, plays SFX through a pooled+throttled shared context, loops
+// the BGM at a lower gain, and unlocks on the FIRST gesture (iOS Safari). It's a
+// pure SOUND layer wired to the SAME game/FX events the effects director uses
+// (subscribed below in loadLevel), mirroring the 3-layer split. The mute toggle is
+// persisted in localStorage and driven by the HUD button. getAudio() also kicks off
+// preload() + installs the first-gesture unlock handler.
+const audio = getAudio();
+
+const DEBUG = location.search.includes('debug=1') || window.__BB_DEBUG === true;
+
+const el = (id) => document.getElementById(id);
+const stage = el('stage'), boardCanvas = el('board'), fx = el('fx');
+const tutEl = el('tut'), tutBanner = el('tut-banner'), tutFinger = el('tut-finger');
+const nextWrap = el('next-wrap'), nextBtn = el('next-btn');
+const traySlots = [...document.querySelectorAll('.tray-slot')].map((slotEl) => ({
+  el: slotEl, canvas: slotEl.querySelector('canvas'),
+}));
+
+// adventure progression: ordered stage list — 100 stages (stage001=onboarding tutorial,
+// stage002..stage100 = the generated adventure, GAME_DESIGN §12). Data-only list of
+// level files; the engine just loads them in order (GLOBAL A1). Progression is
+// Next-button-only (no auto-advance / skip — see onStageClear + nextBtn).
+const STAGES = Array.from({ length: 100 }, (_, k) => `./levels/stage${String(k + 1).padStart(3, '0')}.json`);
+let stageIndex = 0;
+// HOST-DELEGATED PROGRESS (USER REQ 2026-06-23): the game does NOT persist progress in
+// localStorage — the webview HOST (app) is the source of truth. We EMIT progress to the
+// host (GameState) and RESTORE from it on relaunch. clearedStages = high-water cleared
+// level; currentStage = the 1-based stage to play next. currency/items are GENERIC
+// pass-through maps (this game has none → {}) round-tripped verbatim so one host code
+// path stores ANY game's progress. See engine/hostbridge.js + bridgeState() below.
+let clearedStages = 0;          // highest stage number cleared (1-based; 0 = none yet)
+let currency = {};              // generic wallet map (e.g. {coins:N}); {} for this game
+let items = {};                 // generic inventory map (e.g. {bomb:N}); {} for this game
+
+let game, renderer, effects, input, tutorial, currentLevel, currentSeed;
+
+// ── layout: size the board canvas to fit the available square area ───────────
+function layout() {
+  const wrap = el('board-wrap');
+  // the goal HUD now lives INSIDE board-wrap (stacked above the grid) — reserve its height
+  // + the column gap so the square board still fits without overlapping it.
+  const hud = el('hud-top');
+  const reserve = (hud && hud.parentElement === wrap ? hud.offsetHeight + 6 : 0);
+  const avail = Math.min(wrap.clientWidth, wrap.clientHeight - reserve) - 8;
+  renderer.resize(avail, avail);
+  renderer.setDims(game.board.cols, game.board.rows);
+  if (effects) effects.setDims(game.board.cols, game.board.rows); // keep the sweep grid in sync (SSOT)
+  renderer.draw(game.state());
+  for (let i = 0; i < traySlots.length; i++) renderer.drawTrayPiece(traySlots[i].canvas, game.tray[i], game.palette);
+}
+
+// map a board cell index → CSS rect inside #stage (for FX popups / centroids).
+// Uses the renderer's cell-grid ORIGIN (panel pad) so coords match the drawn wells (L12).
+function cellRectOf(cellIndex) {
+  const cell = renderer.cellSize(), o = renderer.cellOrigin();
+  const x = cellIndex % game.board.cols, y = (cellIndex / game.board.cols) | 0;
+  const br = boardCanvas.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  return {
+    x: (br.left - sr.left) + o.x + x * cell,
+    y: (br.top - sr.top) + o.y + y * cell,
+    w: cell, h: cell,
+  };
+}
+
+// CSS rect spanning a whole cleared LINE (row/col) in #stage, from the SAME cell
+// grid the blocks use (L12 SSOT) — so the line glow lies exactly over the cleared
+// cells with no drift. A row spans all cols at y; a col spans all rows at x.
+function lineRectOf(kind, index) {
+  const cell = renderer.cellSize(), o = renderer.cellOrigin();
+  const br = boardCanvas.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  const ox = (br.left - sr.left) + o.x, oy = (br.top - sr.top) + o.y;
+  if (kind === 'row') return { x: ox, y: oy + index * cell, w: game.board.cols * cell, h: cell };
+  return { x: ox + index * cell, y: oy, w: cell, h: game.board.rows * cell }; // col
+}
+
+// CSS rect of the WHOLE 8×8 cell grid (the board) in #stage coords, from the SAME
+// SSOT geom — used to position the stage-clear Well Done layer OVER the board (badges
+// above it, gems/banner centered on it) with no drift (L12).
+function boardRectOf() {
+  const cell = renderer.cellSize(), o = renderer.cellOrigin();
+  const br = boardCanvas.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  return {
+    x: (br.left - sr.left) + o.x, y: (br.top - sr.top) + o.y,
+    w: game.board.cols * cell, h: game.board.rows * cell,
+  };
+}
+
+// ── tutorial geometry helpers: everything in #stage CSS coords ────────────────
+// top-left of board cell (x,y) relative to #stage (for the finger drop target).
+function cellTopLeftInStage(x, y) {
+  const cell = renderer.cellSize(), o = renderer.cellOrigin();
+  const br = boardCanvas.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  return { x: (br.left - sr.left) + o.x + x * cell, y: (br.top - sr.top) + o.y + y * cell };
+}
+// center of tray slot i relative to #stage (for the finger start point).
+function traySlotCenterInStage(i) {
+  const r = traySlots[i].el.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  return { x: (r.left - sr.left) + r.width / 2, y: (r.top - sr.top) + r.height / 2 };
+}
+
+// ── collect counter: DISPLAYED vs LOGICAL (decoupled) ────────────────────────
+// The top gem chip shows a DISPLAYED remaining that LAGS the logical remaining
+// while collected gems fly up; it ticks down only on arrival (onGemArrive). The
+// logical mission count (game.state().mission) stays the source of truth for
+// winning. We reconcile displayed→logical after the flight (and on load / clear)
+// so the chip can never double-count or get stuck if an arrival is missed.
+let _displayedRemaining = Object.create(null); // gemId -> remaining shown on the chip
+
+// ── DEFERRED displayed SCORE (score/combo missions) — mirrors _displayedRemaining ──
+// The top score TRACK (marker + fill) shows a DISPLAYED score that LAGS the logical
+// game score: each +N gain pops at the board then FLIES into the bar, and only ON
+// ARRIVAL (onScoreArrive) does _displayedScore tick up. So the marker rises as points
+// "arrive", not the instant they're scored. Win-sync snaps it to logical right before
+// the result dim (onStageClear) so the bar is full when the celebration appears. The
+// LOGICAL score (game.state().score) stays the source of truth for winning.
+let _displayedScore = 0;
+
+// ── ㊼ IMMEDIATE goal ✓ (user req 2026-06-19): the moment the DISPLAYED score/gem count
+// reaches its target, stamp a ✓ on that HUD element RIGHT THEN — not a beat later at the
+// goal-confirm. These persist (cleared on stage load) so the ✓ stays through the celebration.
+let _goalChecks = [];
+let _checkedGoals = new Set();
+function popGoalCheck(host, leftPct, topPx, size) {
+  if (!host) return;
+  if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+  const chk = document.createElement('div'); chk.className = 'goal-check'; chk.textContent = '✓';
+  chk.style.left = leftPct; chk.style.top = topPx; if (size) chk.style.fontSize = size + 'px';
+  host.appendChild(chk); _goalChecks.push(chk);
+}
+function clearGoalChecks() { _goalChecks.forEach((c) => c.remove()); _goalChecks = []; _checkedGoals = new Set(); }
+// pop a ✓ for any goal whose DISPLAYED value has just met its target (idempotent via _checkedGoals).
+function checkGoalMarks() {
+  if (!game) return;
+  const pr = game.state().mission, mission = el('mission');
+  if (!pr || !mission) return;
+  if (pr.type === 'collect' || pr.type === 'combo') {
+    const targets = pr.targets || (pr.type === 'collect' ? [{ gem: pr.item, got: pr.got, need: pr.need }] : []);
+    for (const t of targets) {
+      const rem = (t.gem in _displayedRemaining) ? _displayedRemaining[t.gem] : Math.max(0, t.need - t.got);
+      if (rem <= 0 && !_checkedGoals.has('gem:' + t.gem)) {
+        _checkedGoals.add('gem:' + t.gem);
+        for (const chip of mission.querySelectorAll('.gem-chip')) {
+          const img = chip.querySelector('img');
+          if (img && img.getAttribute('src') === gemFileFor(t.gem)) {
+            chip.classList.add('done');
+            popGoalCheck(chip, '50%', img ? (img.offsetTop + img.offsetHeight / 2) + 'px' : '40%', 22);
+          }
+        }
+      }
+    }
+  }
+  const scoreNeed = pr.type === 'score' ? pr.need : (pr.score ? pr.score.need : null);
+  if (scoreNeed != null && _displayedScore >= scoreNeed && !_checkedGoals.has('score')) {
+    _checkedGoals.add('score');
+    const track = mission.querySelector('.score-track');
+    popGoalCheck(track && (track.querySelector('.marker') || track.querySelector('.target')), '50%', '50%', 26);
+  }
+}
+
+// pull each gem's logical remaining = need - got (clamped ≥ 0).
+function logicalRemaining() {
+  const pr = game.state().mission;
+  const out = Object.create(null);
+  // collect AND combo both carry gem `targets[]` (combo also has a score sub-goal which
+  // is NOT a flying gem; only the gem chips fly). Anything else has no flying gems.
+  if (pr.type !== 'collect' && pr.type !== 'combo') return out;
+  const targets = pr.targets || (pr.type === 'collect' ? [{ gem: pr.item, got: pr.got, need: pr.need }] : []);
+  for (const t of targets) out[t.gem] = Math.max(0, t.need - t.got);
+  return out;
+}
+
+// snap the DISPLAYED counters to the current logical values (load / new shape).
+function resetDisplayedFromLogical() {
+  _displayedRemaining = logicalRemaining();
+  const t = game.state().mission.type;
+  if (t === 'collect' || t === 'combo') updateHUD();
+}
+
+// reconcile DISPLAYED → LOGICAL (never below logical; clamp stuck/missed arrivals).
+// Called a beat after a clear so any gem whose flight was skipped still settles, and
+// on stage clear so the final readout is exactly the logical remaining.
+function reconcileDisplayed() {
+  const t = game.state().mission.type;
+  // SCORE catch-up (score/combo): a CLEARING placement adds the placed-cell points to the
+  // logical score but emits onLineClear (not onPlace), so only the clearScore flies — the
+  // few placement points would stay un-animated. Snap displayed → logical a beat after the
+  // flight so the marker settles EXACTLY (never stuck below logical), mirroring the gems.
+  if (t === 'score' || t === 'combo') {
+    const log = game.state().score;
+    if (_displayedScore !== log) { _displayedScore = Math.min(log, Math.max(_displayedScore, log)); updateHUD(); }
+  }
+  if (t !== 'collect' && t !== 'combo') return;
+  const log = logicalRemaining();
+  let changed = false;
+  for (const gem in log) {
+    if (_displayedRemaining[gem] !== log[gem]) { _displayedRemaining[gem] = log[gem]; changed = true; }
+  }
+  if (changed) updateHUD();
+}
+
+// counterPosOf(gem): center of that gem's HUD chip icon, in #stage CSS coords. Falls
+// back to the #mission area center if the chip isn't found (e.g. a single-icon HUD).
+function counterPosOf(gem) {
+  const sr = stage.getBoundingClientRect();
+  const mission = el('mission');
+  const chips = mission.querySelectorAll('.gem-chip');
+  for (const chip of chips) {
+    const img = chip.querySelector('img');
+    if (img && img.getAttribute('src') && img.getAttribute('src') === gemFileFor(gem)) {
+      const r = img.getBoundingClientRect();
+      return { x: (r.left - sr.left) + r.width / 2, y: (r.top - sr.top) + r.height / 2 };
+    }
+  }
+  const mr = mission.getBoundingClientRect();
+  return { x: (mr.left - sr.left) + mr.width / 2, y: (mr.top - sr.top) + mr.height / 2 };
+}
+
+// onGemArrive(gem): a flying gem reached the counter → tick the DISPLAYED remaining
+// down by 1 (never below the logical remaining, so we can't overshoot) + pop the chip.
+function onGemArrive(gem) {
+  // each gem dings as it lands on the counter (the per-gem juice; throttled in the
+  // audio manager so a multi-gem cascade reads as a sequence, not a buzzsaw — L13).
+  audio.play('gem');
+  const log = logicalRemaining();
+  const floor = (gem in log) ? log[gem] : 0;
+  const cur = (gem in _displayedRemaining) ? _displayedRemaining[gem] : floor + 1;
+  _displayedRemaining[gem] = Math.max(floor, cur - 1);
+  updateHUD();
+  // tiny pop on the arriving chip
+  const mission = el('mission');
+  for (const chip of mission.querySelectorAll('.gem-chip')) {
+    const img = chip.querySelector('img');
+    if (img && img.getAttribute('src') === gemFileFor(gem)) {
+      chip.classList.remove('arrive'); void chip.offsetWidth; chip.classList.add('arrive');
+    }
+  }
+  checkGoalMarks();   // ㊼ ✓ the INSTANT this gem's displayed count hits 0
+}
+
+// onScoreArrive(amount): a flying "+N" score-gain popup reached the top score bar →
+// tick the DISPLAYED score up by that amount, CLAMPED to the logical score so it can
+// never overshoot (multiple flies in transit + the win-snap stay consistent). Updates
+// the HUD so the marker/number rise IN SYNC with the landing. The bar pulses on arrival.
+function onScoreArrive(amount) {
+  const logical = game.state().score;
+  _displayedScore = Math.min(logical, _displayedScore + amount);
+  updateHUD();
+  // tiny pulse on the marker as the points land (matches the gem-chip arrive pop).
+  const marker = el('mission').querySelector('.score-track .marker');
+  if (marker) { marker.classList.remove('arrive'); void marker.offsetWidth; marker.classList.add('arrive'); }
+  checkGoalMarks();   // ㊼ ✓ the INSTANT the displayed score reaches the target
+}
+
+// scoreBarPosOf(): CENTER of the top score-bar MARKER (the moving circle) in #stage CSS
+// coords — the target the flying "+N" popup is sucked into. Mirrors counterPosOf/
+// cellRectOf (getBoundingClientRect minus the #stage rect). Returns null when there's no
+// score marker (non-score/combo HUD) — the fly then falls back to drifting up + fading
+// but STILL ticks the displayed score (so it never gets stuck below logical).
+function scoreBarPosOf() {
+  const marker = el('mission').querySelector('.score-track .marker');
+  if (!marker) return null;
+  const sr = stage.getBoundingClientRect();
+  const r = marker.getBoundingClientRect();
+  return { x: (r.left - sr.left) + r.width / 2, y: (r.top - sr.top) + r.height / 2 };
+}
+
+// ── HUD ───────────────────────────────────────────────────────────────────
+// Build the mission readout (collect = gem chips, score = score/target, other =
+// badge). Rebuilt only when the SHAPE changes (which gems / mission type) so we
+// don't re-create DOM every frame (L13); counts update in place.
+let _missionShape = null;
+// Set each gem-chip's sprite via the .src PROPERTY (NOT innerHTML). The reels build inlines
+// every asset and resolves `assets/…` → data URI via a shim on HTMLImageElement.prototype.src
+// / setAttribute. innerHTML sets src through the HTML PARSER, which BYPASSES that shim → the
+// gem icon loads as a BROKEN "?" image in the webview host. So we build the chip markup with
+// an EMPTY <img> then assign its src here. (Same root cause as the combo-label "?" box.)
+function applyGemChipSrcs(targets) {
+  el('mission').querySelectorAll('.gem-chip img').forEach((img, i) => {
+    if (targets[i]) img.src = gemFileFor(targets[i].gem);
+  });
+}
+function buildMission(pr) {
+  const mission = el('mission');
+  if (pr.type === 'collect') {
+    const targets = pr.targets || [{ gem: pr.item, got: pr.got, need: pr.need }];
+    const shape = 'collect:' + targets.map((t) => t.gem).join(',');
+    if (shape === _missionShape) return;
+    _missionShape = shape;
+    // new shape → seed the DISPLAYED counters from the logical remaining (so a chip
+    // never shows a stale value from a prior stage). The chip text reads displayed.
+    for (const t of targets) if (!(t.gem in _displayedRemaining)) _displayedRemaining[t.gem] = Math.max(0, t.need - t.got);
+    mission.innerHTML = targets.map((t, i) =>
+      `<span class="gem-chip" data-i="${i}"><img alt="" draggable="false"><span class="count">${_displayedRemaining[t.gem]}</span></span>`
+    ).join('');
+    applyGemChipSrcs(targets);   // set img.src via property → reels asset shim resolves it
+  } else if (pr.type === 'score') {
+    // include the target in the shape key so switching to a score level with a
+    // DIFFERENT target rebuilds the readout (the target circle is baked at build time).
+    if (_missionShape !== 'score:' + pr.need) {
+      _missionShape = 'score:' + pr.need;
+      // moving-circle score track (CHANGE 3): filled portion + current-score marker
+      // that slides toward the darker target circle at the right end.
+      mission.innerHTML = `<span class="score-mission"><span class="score-track">`
+        + `<span class="fill"></span>`
+        + `<span class="marker">0</span>`
+        + `<span class="target">${pr.need}</span>`
+        + `</span></span>`;
+    }
+  } else if (pr.type === 'combo') {
+    // combo (GAME_DESIGN §12.2): show the score track AND the gem chip(s) at once.
+    const targets = pr.targets || [];
+    const scoreNeed = pr.score ? pr.score.need : 0;
+    const shape = 'combo:' + scoreNeed + ':' + targets.map((t) => t.gem).join(',');
+    if (shape === _missionShape) return;
+    _missionShape = shape;
+    for (const t of targets) if (!(t.gem in _displayedRemaining)) _displayedRemaining[t.gem] = Math.max(0, t.need - t.got);
+    let html = '';
+    if (pr.score) {
+      html += `<span class="score-mission"><span class="score-track">`
+        + `<span class="fill"></span><span class="marker">0</span>`
+        + `<span class="target">${pr.score.need}</span></span></span>`;
+    }
+    html += targets.map((t, i) =>
+      `<span class="gem-chip" data-i="${i}"><img alt="" draggable="false"><span class="count">${_displayedRemaining[t.gem]}</span></span>`
+    ).join('');
+    mission.innerHTML = html;
+    applyGemChipSrcs(targets);   // set img.src via property → reels asset shim resolves it
+  } else {
+    if (_missionShape !== 'badge:' + pr.type) {
+      _missionShape = 'badge:' + pr.type;
+      mission.innerHTML = `<span class="icon badge">${pr.type[0].toUpperCase()}</span><span class="count">${pr.got} / ${pr.need}</span>`;
+    }
+  }
+}
+// Position the moving score marker + the gold fill so the marker NEVER collides with the
+// target circle at the right end until completion (frac=1). The marker rides the leading
+// edge of the fill, so the current-score number and the filled background always line up.
+// Travel range: marker CENTER from its own radius (left edge flush with the track) to a
+// point that clears the target circle (target half-width + marker half-width + a small gap).
+function setScoreTrack(mission, frac, scoreText) {
+  const track = mission.querySelector('.score-track');
+  const marker = mission.querySelector('.marker');
+  const fill = mission.querySelector('.fill');
+  if (!track || !marker || !fill) return;
+  const trackW = track.clientWidth || 150;
+  const startPx = 15;                 // marker radius (34px embossed circle) → at frac 0 its left edge sits ~flush
+  const endPx = Math.max(startPx, trackW - 40); // clears the 34px engraved goal socket during play (small gap)
+  marker.textContent = scoreText;
+  if (frac >= 1) {
+    // GOAL REACHED: the moving circle slides ALL THE WAY to the RIGHT END to MEET the
+    // target circle (a clear "you hit the goal!" arrival), and the gold fill completes the
+    // whole bar. Overlapping the target is fine HERE (it's the win climax) — we only keep
+    // the marker clear of the target DURING play (frac<1) to avoid the mid-game collision.
+    // CONCENTRIC with the target circle: both are 34px, and the target sits at right:-13px
+    // (so its center is trackW - 4). Putting the marker center there makes the two SAME-SIZE
+    // circles overlap EXACTLY (center-aligned) at the right end — user req. Not past it.
+    marker.style.left = (trackW - 4) + 'px';       // seats EXACTLY in the engraved goal socket (concentric)
+    fill.style.width = (trackW - 8) + 'px';          // fill completes the groove up to the socket
+  } else {
+    const px = startPx + frac * (endPx - startPx);
+    marker.style.left = px + 'px';
+    fill.style.width = Math.max(0, px - 3) + 'px'; // fill (inset left:3px) ends under the marker
+  }
+}
+function updateHUD() {
+  const s = game.state();
+  el('score').textContent = s.score;
+  el('combo').textContent = s.combo >= 2 ? `Combo ×${s.combo}` : '';
+  const pr = s.mission;
+  buildMission(pr);
+  const mission = el('mission');
+  if (pr.type === 'collect') {
+    const targets = pr.targets || [{ gem: pr.item, got: pr.got, need: pr.need }];
+    const chips = mission.querySelectorAll('.gem-chip');
+    targets.forEach((t, i) => {
+      const chip = chips[i]; if (!chip) return;
+      // DISPLAYED remaining drives the chip (lags logical during the gem flight); the
+      // progress bar below follows logical. Displayed never drops below logical, and
+      // reconcileDisplayed() snaps it exact after the flight / on clear (no stuck/dup).
+      const log = Math.max(0, t.need - t.got);
+      if (!(t.gem in _displayedRemaining)) _displayedRemaining[t.gem] = log;
+      const remain = Math.max(log, _displayedRemaining[t.gem]);
+      chip.querySelector('.count').textContent = remain;
+      chip.classList.toggle('done', remain === 0);
+    });
+  } else if (pr.type === 'score') {
+    // move the marker to DISPLAYED/target along the track; grow the fill to match. The
+    // DISPLAYED score LAGS the logical score and ticks up as each "+N" fly LANDS
+    // (onScoreArrive) — so the marker rises as the points arrive, not instantly. Win
+    // detection stays on the logical state; only this readout is deferred.
+    const frac = Math.max(0, Math.min(1, pr.need ? _displayedScore / pr.need : 0));
+    setScoreTrack(mission, frac, _displayedScore);
+  } else if (pr.type === 'combo') {
+    // combo (GAME_DESIGN §12.2): drive BOTH the score track (if any) AND the gem chips.
+    if (pr.score) {
+      const frac = Math.max(0, Math.min(1, pr.score.need ? _displayedScore / pr.score.need : 0));
+      setScoreTrack(mission, frac, _displayedScore);
+    }
+    const targets = pr.targets || [];
+    const chips = mission.querySelectorAll('.gem-chip');
+    targets.forEach((t, i) => {
+      const chip = chips[i]; if (!chip) return;
+      const log = Math.max(0, t.need - t.got);
+      if (!(t.gem in _displayedRemaining)) _displayedRemaining[t.gem] = log;
+      const remain = Math.max(log, _displayedRemaining[t.gem]);
+      chip.querySelector('.count').textContent = remain;
+      chip.classList.toggle('done', remain === 0);
+    });
+  } else {
+    const c = mission.querySelector('.count'); if (c) c.textContent = `${pr.got} / ${pr.need}`;
+  }
+  // (removed the redundant bottom progress bar above the tray — user req 2026-06-18: the TOP
+  // HUD already shows mission progress (gem chips / score track), so the bottom bar was noise.)
+}
+
+// ── tray rendering after a change ────────────────────────────────────────────
+// FIX C — refill-reveal delay: when a placement consumes the LAST tray piece the
+// LOGICAL tray refills synchronously (game.tray already holds the new pieces), but
+// we hold the new pieces' VISUAL appearance for one clear-anim beat so the player
+// first sees the last block land + its line clear, THEN the fresh queue pops in.
+// While `refillPending` is true we draw the slots EMPTY (no new pieces) and gate
+// dragging (input.setTraySuppressed). The flag + timeout are cancelled on every
+// level load / restart so a fresh stage never inherits a stale pending reveal.
+let refillPending = false;
+let _refillTimer = null;
+
+function refreshTray() {
+  // ⑩ game over: the queue is CLEARED ("No Space Left" shows instead) — draw every slot empty
+  // and keep it hidden, so a refreshTray after the game-over placement never restores pieces.
+  if (game && game.over) {
+    for (const s of traySlots) { renderer.drawTrayPiece(s.canvas, null, game.palette); s.el.classList.add('tray-hidden'); }
+    return;
+  }
+  for (let i = 0; i < traySlots.length; i++) {
+    // during the reveal delay, render the freshly-refilled slots as EMPTY (null) so
+    // the new pieces stay hidden until the beat elapses (logical tray is untouched).
+    const piece = refillPending ? null : game.tray[i];
+    renderer.drawTrayPiece(traySlots[i].canvas, piece, game.palette);
+    traySlots[i].el.classList.remove('lifted');
+    // pop/fade the new queue in when it reveals (CSS .tray-reveal animation)
+    traySlots[i].el.classList.toggle('tray-hidden', refillPending);
+  }
+}
+
+// cancel any in-flight refill reveal (level load / restart) → show the live tray.
+function cancelRefillReveal() {
+  if (_refillTimer) { clearTimeout(_refillTimer); _refillTimer = null; }
+  refillPending = false;
+  if (input) input.setTraySuppressed(false);
+}
+
+// begin the host-only reveal delay after a refilling placement. The board + FX have
+// already been rendered (the last block + its line clear are visible); we just hold
+// the NEW tray pieces hidden + un-grabbable for one clear-anim beat, then reveal.
+function startRefillReveal() {
+  refillPending = true;
+  if (input) input.setTraySuppressed(true);
+  refreshTray(); // hide the new pieces NOW (they must not flash in this frame)
+  if (_refillTimer) clearTimeout(_refillTimer);
+  const delay = (game.cfg.effects.trayRefillRevealMs ?? 420);
+  _refillTimer = setTimeout(() => {
+    _refillTimer = null;
+    refillPending = false;
+    if (input) input.setTraySuppressed(false);
+    refreshTray(); // now draw + reveal the new queue (and re-enable dragging)
+  }, delay);
+}
+
+function onChange() { renderer.draw(game.state()); updateHUD(); refreshTray(); }
+
+// ── load a level (json) with a seed ──────────────────────────────────────────
+async function loadLevel(levelJson, seed) {
+  const { ok, errors, level } = validateLevel(levelJson);
+  if (!ok) { console.error('Invalid level:', errors); throw new Error('invalid level: ' + errors.join('; ')); }
+  // FIX C — a fresh stage / restart must never inherit a pending refill-reveal from
+  // the previous game (would hide the new stage's first tray). Cancel it up front.
+  cancelRefillReveal();
+  // also cancel any pending post-clear stage-clear-sequence timer so a load (incl. direct
+  // __BB.load / restart) never lets a stale dim drop OVER the freshly-loaded stage.
+  clearTimeout(window.__bbSeqTimer); window.__bbSeqTimer = 0;
+  // cancel a pending score reconcile from the previous stage (a fresh stage resets the
+  // displayed score to 0 below; a stale reconcile would be harmless but we keep it clean).
+  clearTimeout(window.__bbScoreReconcile); window.__bbScoreReconcile = 0;
+  // reset the last-clear fx tracker (task D) so a stale 2+ clear from the previous stage
+  // can never extend the next stage's result delay before that stage scores its own clear.
+  window.__bbLastClear = { lines: 0, fxMs: 0 };
+  // ⑩: clear any prior game-over "No Space Left" overlay + un-hide the tray for the fresh stage.
+  { const ns = document.getElementById('no-space'); if (ns) ns.remove();
+    document.querySelectorAll('.tray-slot.tray-hidden').forEach((s) => s.classList.remove('tray-hidden')); }
+  currentLevel = level;
+  currentSeed = (seed == null) ? (level.feeder?.seed || Date.now() % 2147483647) : seed;
+  const rng = makeRng(currentSeed);
+  game = new Game(level, rng);
+
+  if (!renderer) {
+    renderer = new Renderer(boardCanvas);
+    // FLAT-TRAY FIX: the board redraws itself when the block sprites finish decoding
+    // (renderer.js), but the TRAY canvases are host-owned and weren't refreshed — so on
+    // the very first stage (sprites not yet decoded at first paint) the queue blocks fell
+    // back to flat solid colors and never updated. Redraw the tray once sprites are ready.
+    renderer.imgs.ready.then(() => { try { refreshTray(); } catch (e) {} });
+  }
+  document.body.classList.remove('sc-dim');   // a fresh stage starts bright (drop any prior result-screen viewport dim)
+  if (!effects) effects = new EffectsDirector(fx, renderer, game.cfg.effects,
+    { cellRectOf, lineRectOf, counterPosOf, onGemArrive, scoreBarPosOf, onScoreArrive });
+  else effects.clearBanner();
+  effects.attach(game);
+  // DEV/QA handles: read-only references for the dev stage-selector + headless QA (e.g. force
+  // a 따봉 reward via game.emit('onGoodPlace', {cells:[...], color:'b'}) for a screenshot).
+  window.game = game; window.effects = effects;
+
+  // AUDIO event wiring (JOB 1, L22): play SFX ALONGSIDE the effects director on the
+  // same game events. Tier-gated where needed so a sound doesn't spam every clear:
+  //   onPlace      → place ding (only fires on a NON-clearing drop; see game.js)
+  //   onLineClear  → clear whoosh + a gem ding PER collected gem (each gem dings on
+  //                  ARRIVAL via onGemArrive below — that's the satisfying per-gem
+  //                  feedback; the clear sound fires once here for the line itself)
+  //   onCombo      → combo riff (game emits this only when combo ≥ 2)
+  //   onPraise     → praise sting, but ONLY tier ≥ 3 (fantastic+) so it doesn't play
+  //                  on every single-line clear (tier-gate, anti-spam per spec)
+  //   onStageClear → the stage-clear fanfare is NOT wired here; it fires ONCE inside the
+  //                  Well Done sequence (onStageClear → effects.playStageClear onSfx) so
+  //                  it plays at the right beat and is never doubled.
+  // Button taps (Next / restart) play the button sound at their handlers.
+  game.on('onPlace', () => audio.play('place'));
+  // A placement that CLEARS a line emits onLineClear (NOT onPlace). Play ONLY the clear sound — the
+  // earlier version ALSO played 'place' here, so a clearing drop fired TWO sounds (place + clear),
+  // which read as a doubled/"번갈아" sound now that Web Audio plays both reliably (USER REQ 2026-06-22).
+  game.on('onLineClear', () => audio.play('clear'));
+  game.on('onCombo', () => audio.play('combo'));
+  game.on('onPraise', (e) => { if ((e.tier || 0) >= 3) audio.play('praise'); });
+  // ⑩ game over: clear the queue + show "No Space Left" in the tray area (the board fill
+  // animation + the Game Over banner are driven by the effects layer's _gameOver).
+  game.on('onGameOver', () => {
+    // remove the queue blocks outright (clear each slot canvas + hide), then show "No Space Left".
+    traySlots.forEach((s) => { renderer.drawTrayPiece(s.canvas, null, game.palette); s.el.classList.add('tray-hidden'); });
+    if (!document.getElementById('no-space')) {
+      const ns = document.createElement('div'); ns.id = 'no-space'; ns.textContent = 'No Space Left';
+      el('tray').appendChild(ns);
+    }
+    // GAMEREELS: signal failure to the host (no-op when GR inactive). progressIndex/
+    // currentIndex = the 1-based level the player failed on (stageIndex+1).
+    if (GR.active) GR.gameEnd(false, stageIndex + 1);
+    // HOST-DELEGATED PROGRESS: game over is a save point. currentStage = the failed stage
+    // (player retries it on relaunch); clearedStages high-water is unchanged.
+    bridgeSaveState();
+  });
+
+  // reset the DISPLAYED collect counters to this level's logical remaining (a fresh
+  // stage must never inherit the previous stage's displayed lag — reconcile on load).
+  resetDisplayedFromLogical();
+  // reset the DEFERRED displayed SCORE to 0 for the new stage (a fresh score/combo
+  // mission starts the marker at 0; it then ticks up as +N flies land). Must be reset
+  // BEFORE the first updateHUD so the bar never inherits the previous stage's value.
+  _displayedScore = 0;
+  clearGoalChecks();   // ㊼ drop any ✓ stamps so a fresh stage never inherits them
+  // gate the tiered score-gain → bar fly to score/combo stages (collect keeps the gold
+  // "+score" popup). Driven off this stage's mission type (the single source of truth).
+  {
+    const mt = game.state().mission.type;
+    effects.setScoreMode(mt === 'score' || mt === 'combo');
+  }
+
+  // clear the stage-clear state marker from a previous stage. The actual sequence
+  // (sweep cells / Well Done layer / confetti / timers + the detached #next-btn) is
+  // torn down by effects.clearBanner() above (effects.tearDownStageClear) so nothing
+  // lingers into the new stage.
+  nextWrap.classList.remove('show');
+
+  // tear down a previous tutorial controller (if any)
+  if (tutorial) { tutorial.destroy(); tutorial = null; }
+
+  // adventure clear → show the "Next" affordance (or restart for game over).
+  // For the tutorial the effects director suppresses its banner (overlay shown
+  // by the tutorial), so onStageClear here drives progression.
+  game.on('onStageClear', () => { reconcileDisplayed(); onStageClear(); });
+
+  // after each clear, schedule a DISPLAYED→LOGICAL reconcile a beat past the gem
+  // flight so any missed arrival settles exactly (never stuck / double-counted).
+  const flyMs = (game.cfg.effects.gemFlyMs || 520);
+  const flyStagger = (game.cfg.effects.gemFlyStaggerMs || 70);
+  game.on('onLineClear', (e) => {
+    // TASK D — remember the LAST clear's line count + its fx duration so onStageClear can
+    // make the result dim WAIT for a 2+ line rainbow wave-burst to FULLY play before the
+    // sweep/dim masks it. effects._lastClearFxMs is set synchronously inside _lineClear
+    // (which runs on this same event, registered earlier in attach), so it's current here.
+    window.__bbLastClear = { lines: e.lines || 0, fxMs: (effects && effects._lastClearFxMs) || 0,
+      cells: e.cells || [], origin: e.origin || null, colors: e.cellColors || {} }; // ㊻ data for the win choreography
+    // SCORE/COMBO: schedule a displayed→logical SCORE reconcile a beat past the score-fly
+    // (hold ~360 + flight ~460 worst case) so any un-animated placement points on this
+    // clearing move (onPlace doesn't fire when lines clear) settle onto the marker.
+    const mt = game.state().mission.type;
+    if (mt === 'score' || mt === 'combo') {
+      clearTimeout(window.__bbScoreReconcile);
+      window.__bbScoreReconcile = setTimeout(reconcileDisplayed, 900);
+    }
+    const n = (e.gems && e.gems.length) || 0;
+    if (n === 0) return;
+    clearTimeout(window.__bbGemReconcile);
+    window.__bbGemReconcile = setTimeout(reconcileDisplayed, flyMs + (n - 1) * flyStagger + 200);
+  });
+
+  // (re)create input bound to the new game. `effects` drives the line-clear PREVIEW
+  // glow during a drag (CHANGE 1); it's created once above and reused across loads.
+  // onPlaced fires after EVERY successful drop. When the drop consumed the last tray
+  // piece (res.refilled), kick off the host-only refill-reveal delay (FIX C): the
+  // board + clear FX show first, then the new queue pops in a beat later.
+  const handlePlaced = (res) => { if (res && res.refilled) startRefillReveal(); };
+  if (!input) {
+    input = new DragInput({ stage, boardCanvas, traySlots, renderer, game,
+      onPlaced: handlePlaced, onChange, effects });
+  } else { input.setGame(game); input.setEffects(effects); input.setOnPlaced(handlePlaced); }
+  if (DEBUG) { window.__input = input; window.__renderer = renderer; }   // QA: inspect drag/render state
+
+  // onboarding tutorial controller (only when the level enables it, §10)
+  if (game.tutorial) {
+    tutorial = new TutorialController({
+      game, level,
+      overlay: tutEl, bannerEl: tutBanner, fingerEl: tutFinger,
+      traySlots,
+      cellSize: () => renderer.cellSize(),
+      cellTopLeft: cellTopLeftInStage,
+      traySlotCenter: traySlotCenterInStage,
+    });
+    input.setTutorial(tutorial);
+  } else {
+    tutEl.style.display = 'none';
+    input.setTutorial(null);
+  }
+
+  // restart on banner tap (game-over path; tutorial is failure-proof)
+  fx.onclick = () => { if (game.over) { audio.play('button'); effects.clearBanner(); loadLevel(currentLevel, currentSeed); } };
+
+  layout();
+  updateHUD();
+
+  // start the tutorial AFTER layout so geometry helpers have real rects
+  if (tutorial) tutorial.start();
+}
+
+// load a stage's level JSON by ordered index. Bundled/offline builds (gamereels in a
+// file:// or sandboxed webview that blocks fetch) inline ALL levels into
+// window.__LEVELS = { stage001:{…}, … } via a classic <script> loaded before app.js,
+// so we read from there first (zero-fetch). The normal/live build has no __LEVELS →
+// it falls back to fetch(STAGES[i]) exactly as before (no behavior change). (L22)
+async function loadStageData(i) {
+  const id = 'stage' + String(i + 1).padStart(3, '0');
+  const L = (typeof window !== 'undefined') ? window.__LEVELS : null;
+  if (L && L[id]) {
+    const v = L[id];
+    // tolerate either an inlined object or a JSON string per stage.
+    return (typeof v === 'string') ? JSON.parse(v) : v;
+  }
+  const res = await fetch(STAGES[i]);
+  return await res.json();
+}
+
+// load a stage by ordered index (adventure progression). Clamps to the list.
+async function gotoStage(i) {
+  // cancel any pending tutorial auto-advance timer FIRST — otherwise a manual
+  // "Next" tap during the onboarding auto-advance window advances once, then the
+  // stale timer fires again and advances a SECOND time → stage 2 gets skipped.
+  clearTimeout(window.__bbAutoNext); window.__bbAutoNext = 0;
+  clearTimeout(window.__bbSeqTimer); window.__bbSeqTimer = 0; // cancel a pending result-screen
+  stageIndex = Math.max(0, Math.min(STAGES.length - 1, i));
+  const lvl = await loadStageData(stageIndex);
+  await loadLevel(lvl, DEBUG ? 12345 : null);
+  updateDevStage();   // keep the dev stage selector label/ends in sync
+  return stageIndex;
+}
+
+// adventure clear handler — plays the STAGE-CLEAR SEQUENCE (redesign 2026-06-18):
+//   (1) a row-by-row ALTERNATING-direction neon grid sweep over the board, then
+//   (2) a "Well Done" layer (Lv.N badge + RAPID progress bar that flashes at full +
+//       Lv.N+1 badge, confetti raining from the top, decorative center gems, the
+//       "Well Done!" banner revealed left→right), and finally
+//   (3) the "Next Stage" button appears ONLY after the text reveal.
+// Advancement is BUTTON-ONLY for EVERY stage incl. onboarding (no auto-advance — user
+// req 2026-06-17): the player taps the button to continue (gotoStage). #next-wrap is
+// toggled `.show` while the Well Done layer is up (state marker for QA/solver). The
+// sequence is driven by effects.playStageClear and torn down by clearBanner() on load.
+// ⑦ GOAL-CONFIRM beat (user req 2026-06-18) — a clean "goal met!" emphasis on the goal HUD
+// (the score track for score missions, the gem chips for collect/combo) shown AFTER the goal
+// juice and BEFORE the stage-clear grid sweep, so the clear is unmistakable. Pops + glows
+// #mission, flashes the gem chips "done", stamps a ✓ over the HUD. Returns the beat duration
+// (ms) so onStageClear waits for it; self-removes everything afterward.
+function playGoalConfirm(type) {
+  const hud = el('hud-top'), mission = el('mission');
+  if (!hud || !mission) return 0;
+  mission.classList.remove('goal-confirm'); void mission.offsetWidth; // restart cleanly
+  mission.classList.add('goal-confirm');
+  const DUR = 820;
+  // ㊼: the ✓ now pops the INSTANT a goal is MET (checkGoalMarks, fired from onGem/ScoreArrive),
+  // not here. This beat only does the chip "done" emphasis + a FALLBACK ✓ for any goal that was
+  // met without a flight arrival (so the ✓ is never missed).
+  checkGoalMarks();
+  if (type === 'collect' || type === 'combo') {
+    mission.querySelectorAll('.gem-chip').forEach((c) => {
+      const cnt = c.querySelector('.count'); if (cnt) cnt.textContent = '0';
+      c.classList.add('done', 'confirm');
+    });
+  }
+  setTimeout(() => {
+    mission.classList.remove('goal-confirm');
+    mission.querySelectorAll('.gem-chip.confirm').forEach((c) => c.classList.remove('confirm'));
+  }, DUR + 60);
+  return DUR;
+}
+
+function onStageClear() {
+  // GAMEREELS run-cap: a limited run (RT.to < 100) ENDS at level RT.to — the player
+  // does not advance past it. Default to=100 → `last` is unchanged (true only at the
+  // real end of the adventure). When the capped level is cleared, the Next button
+  // finishes the run (see nextBtn.onclick: it replays from RT.from / GR.gameEnd fired).
+  const cappedEnd = stageIndex >= (RT.to - 1);
+  const last = (stageIndex >= STAGES.length - 1) || cappedEnd;
+  const levelNum = stageIndex + 1;            // current stage number N (1-based)
+  // GAMEREELS: emit GameEnd(success) DELAYED ~700ms so it fires AFTER the clear
+  // celebration (the host shows its CTA post-anim). CAPTURE levelNum NOW so a later
+  // auto-advance can't change the reported level. Gated by RT.shouldEmitGameEnd:
+  // limited run → at RT.to; loop set → every `loop`; default → every 30 (30/60/90).
+  if (GR.active && RT.shouldEmitGameEnd(levelNum)) {
+    setTimeout(() => { try { GR.gameEnd(true, levelNum); } catch (e) {} }, 700);
+  }
+  // HOST-DELEGATED PROGRESS: stage CLEAR is a save point. Bump the high-water cleared
+  // level and persist with currentStage = the NEXT stage (so a relaunch resumes ahead,
+  // even if the app is closed on the Well Done overlay before tapping Next).
+  clearedStages = Math.max(clearedStages, levelNum);
+  bridgeSaveState(levelNum + 1);
+  nextBtn.textContent = last ? 'Replay' : 'Next Stage';
+
+  // drop any leftover transient fx, then kick the sequence off ONLY AFTER the GOAL-
+  // COMPLETION juice finishes (user: the result dim must not cut off the score-marker
+  // slide / gem-collect flights). Score missions wait for the marker to slide to the
+  // target (~.22s CSS transition + settle); collect/combo wait for the gems to fly to
+  // the counter and the count to reconcile.
+  // CAPTURE the winning clear's fx info BEFORE clearBanner() — clearBanner tears the
+  // sequence down but does NOT touch __bbLastClear (host var) or _lastClearFxMs (only
+  // overwritten on the NEXT onLineClear). We read it here so a 2+ line winning clear can
+  // extend showDelay below (task D). The win move's onLineClear fired just before this.
+  const winClear = window.__bbLastClear || { lines: 0, fxMs: 0 };
+  // KEEP the in-flight clear burst alive for ANY winning clear (㉔: 1-line too, not just 2+)
+  // — clearBanner() otherwise wipes the fragment/burst layer, killing the effect before it even
+  // PAINTS (the whole place→clear→win is synchronous). Level LOAD still wipes (no-arg call).
+  const keepWave = winClear.lines >= 1 && winClear.fxMs > 0;
+  if (effects) effects.clearBanner(keepWave);
+  // ㊻ WIN CHOREOGRAPHY (USER REQ 2026-06-19): the moment the last piece lands, run the ordered
+  // celebration over the board — ①cleared block ZOOMS → ②blocks FALL down + CONFETTI from the
+  // top → ③ZIGZAG RAINBOW grid fill — THEN the result screen (showDelay is extended below to
+  // outlast it). The gems still fly to the counter during the fall. Replaces the bare ㊹ sweep.
+  let winSeqMs = 0;
+  if (effects) winSeqMs = effects.playWinSequence({
+    boardRect: boardRectOf(), cells: winClear.cells || [], origin: winClear.origin, colors: winClear.colors || {},
+  });
+  const pr = game.state().mission;
+  const fxc = game.cfg.effects || {};
+  let showDelay = (pr.type === 'collect' || pr.type === 'combo')
+    ? (fxc.gemFlyMs ?? 520) + (fxc.gemFlyStaggerMs ?? 70) * 3 + 360
+    : 560; // score: marker slides to the right end (~.22s) + a clear hold before the dim
+  // TASK D — if the WINNING move was a 2+ line clear, the RAINBOW WAVE-BURST must FULLY
+  // play before the result sweep/dim (otherwise the dim masks it → "no clear effect").
+  // EXTEND showDelay to outlast the wave-burst + a small beat (never SHORTEN it, so all
+  // the existing win-sequencing — deferred displayed score, marker overlap, score-fly,
+  // timer cancellation — stays intact; we only push the dim later).
+  if (winClear.lines >= 1 && winClear.fxMs > 0) {
+    showDelay = Math.max(showDelay, winClear.fxMs + 180); // the clear burst finishes, then a beat
+  }
+  // ㊻ the result screen must wait for the whole win choreography (fall→confetti→zigzag) to play.
+  showDelay = Math.max(showDelay, winSeqMs);
+  // ㊻v3: the goal-confirm beat runs this long BEFORE the result, so it overlaps the rainbow's
+  // tail instead of delaying the result after it.
+  const GOAL_CONFIRM_LEAD = 420;
+  // STORE the timer (window.__bbSeqTimer, which gotoStage/load cancels) so a stage load
+  // during this delay CANCELS the pending sequence — otherwise a stale post-clear timer
+  // would fire the dim OVER the freshly-loaded next stage (race widened by the longer
+  // goal-completion delay above). NOT __bbAutoNext: that name means "auto-advance" (which
+  // is intentionally gone — button-only), and QA asserts it stays unarmed.
+  clearTimeout(window.__bbSeqTimer);
+  window.__bbSeqTimer = setTimeout(() => {
+    // WIN-SYNC: snap the DEFERRED displayed score to the logical score so the marker
+    // reaches the END (frac>=1 → meets the target circle) before the result dim appears.
+    // The in-flight "+N" flies animated the rise during `showDelay`; this guarantees the
+    // bar is complete at the climax even if a fly was still mid-air. (setScoreTrack's
+    // frac>=1 overlap behavior is unchanged — updateHUD just reaches it now.)
+    _displayedScore = game.state().score; updateHUD();
+    // ⑦ GOAL-CONFIRM beat: emphasize the goal HUD (score track / gem chips) — run it CONCURRENTLY
+    // with the rainbow's tail (fire-and-forget), so it does NOT add delay AFTER the rainbow.
+    playGoalConfirm(pr.type);
+    // ㊻v3: show the result the INSTANT the rainbow finishes sweeping (USER REQ: 결과창 즉시) —
+    // GOAL_CONFIRM_LEAD after this point lands exactly at the rainbow's visual end (showDelay
+    // was set above to that cue). No extra beat.
+    window.__bbSeqTimer = setTimeout(() => {
+      _displayedScore = game.state().score; updateHUD();
+      nextWrap.classList.add('show');           // state marker: the Well Done layer is up
+      document.body.classList.add('sc-dim');    // darken the full viewport (incl. letterbox margins) to match the dim
+      effects.playStageClear({
+        levelNum, isLast: last,
+        nextBtn,                                 // mounted into the layer AFTER the text wipe
+        onSfx: () => audio.play('stageclear'),   // fire the fanfare ONCE here (not doubled)
+        palette: game.palette,
+        boardRect: boardRectOf(),                // position the layer OVER the board (SSOT)
+      });
+    }, GOAL_CONFIRM_LEAD);
+  }, Math.max(0, showDelay - GOAL_CONFIRM_LEAD));
+}
+
+nextBtn.onclick = () => {
+  audio.play('button');
+  nextWrap.classList.remove('show');
+  // GAMEREELS run-cap: do not advance past RT.to. On the default full run (to=100)
+  // RT.to-1 === STAGES.length-1, so this is the existing "replay from the start"
+  // behavior. For a limited run, replaying restarts at RT.from (the run's start).
+  if (stageIndex >= STAGES.length - 1 || stageIndex >= RT.to - 1) gotoStage(RT.from - 1);
+  else gotoStage(stageIndex + 1);
+};
+
+window.addEventListener('resize', () => { if (game) layout(); });
+
+// (sound mute toggle button removed per user req 2026-06-22 — audio plays by default;
+// the audio manager's mute API + persisted flag remain for any future re-add.)
+
+// ── DEV stage selector (top-right) — prev/next to quickly browse the adventure stages.
+// A development convenience (not a player feature): it calls the SAME gotoStage() the
+// adventure uses, so loading/feeder/HUD all behave exactly like normal play. The label
+// shows the current stage and disables at the ends; tapping it jumps to a typed stage.
+const devPrev = el('dev-prev'), devNext = el('dev-next'), devLabel = el('dev-label');
+function updateDevStage() {
+  if (!devLabel) return;
+  devLabel.textContent = 'Lv.' + (stageIndex + 1);
+  devPrev.disabled = stageIndex <= 0;
+  devNext.disabled = stageIndex >= STAGES.length - 1;
+}
+if (devPrev) {
+  devPrev.addEventListener('click', () => { audio.play('button'); gotoStage(stageIndex - 1); });
+  devNext.addEventListener('click', () => { audio.play('button'); gotoStage(stageIndex + 1); });
+  devLabel.addEventListener('click', () => {
+    const ans = prompt('Jump to stage (1–' + STAGES.length + '):', String(stageIndex + 1));
+    if (ans == null) return;
+    const n = parseInt(ans, 10);
+    if (Number.isFinite(n)) gotoStage(n - 1);
+  });
+}
+// SECRET reveal: 3 quick taps in the in-game TOP-LEFT corner toggle the dev selector on/off
+// (hidden by default, no on-screen hint — USER REQ 2026-06-22). Taps must be quick (≤1.5s
+// apart) or the counter resets, so normal corner taps never accidentally reveal it.
+const devHotspot = el('dev-hotspot');
+const devStageEl = el('dev-stage');
+// GAMEREELS (reels playable): the stage selector is a DEV CHEAT (lets you skip/jump
+// stages). In a reels build a real player must NOT be able to cheat, so ALL reveal
+// paths — the 3-tap top-left hotspot, the 'Q' key, and the ?dev=1 force-show — are
+// disabled when GR.active (?gamereels / window.__GAMEREELS). The default (non-reels)
+// build keeps every dev path for our own testing. (USER REQ 2026-06-23)
+if (!GR.active) {
+  let devTaps = 0, devTapTimer = 0;
+  if (devHotspot) devHotspot.addEventListener('click', () => {
+    devTaps++;
+    clearTimeout(devTapTimer);
+    devTapTimer = setTimeout(() => { devTaps = 0; }, 1500);
+    if (devTaps >= 3) { devTaps = 0; if (devStageEl) devStageEl.classList.toggle('dev-on'); }
+  });
+  // DEV toggle via keyboard 'Q' (desktop convenience — USER REQ 2026-06-22): enter/exit dev mode.
+  window.addEventListener('keydown', (e) => {
+    if ((e.key === 'q' || e.key === 'Q') && !e.repeat && devStageEl) devStageEl.classList.toggle('dev-on');
+  });
+  // ?dev=1 force-shows the dev stage selector on boot (default dev=off → no change).
+  if (RT.dev && devStageEl) devStageEl.classList.add('dev-on');
+}
+
+// ── HOST-DELEGATED PROGRESS bridge (game ⇄ app) ───────────────────────────────
+// bridgeState() builds the canonical GameState payload. currentStage defaults to the
+// loaded stage (stageIndex+1); a clear passes the NEXT stage explicitly so a save taken
+// on the "Well Done" overlay restores to the upcoming stage (spec example: cleared 30 →
+// {clearedStages:30, currentStage:31}). currency/items are passed through untouched.
+function bridgeState(curStage) {
+  const cur = (curStage != null) ? (curStage | 0) : ((stageIndex | 0) + 1);
+  return {
+    clearedStages: clearedStages | 0,
+    currentStage: Math.max(1, Math.min(STAGES.length, cur)),
+    currency: currency || {},
+    items: items || {},
+  };
+}
+// game → host: persist NOW (no-op when GR inactive). Save points (USER REQ): stage end
+// (clear/gameover), app backgrounded (pagehide/visibilitychange→hidden), item use.
+function bridgeSaveState(curStage) { try { if (GR.active) GR.gameState(bridgeState(curStage)); } catch (e) {} }
+// host → game: restore. The host's payload is the source of truth → jump to currentStage.
+function bridgeRestore(data) {
+  if (!data || typeof data !== 'object') return;
+  if (data.currency && typeof data.currency === 'object') currency = data.currency;   // round-trip verbatim
+  if (data.items && typeof data.items === 'object') items = data.items;
+  if (Number.isFinite(+data.clearedStages)) clearedStages = Math.max(0, +data.clearedStages | 0);
+  // currentStage wins; if absent, resume just after the last cleared stage.
+  const cur = Number.isFinite(+data.currentStage) ? (+data.currentStage | 0) : (clearedStages + 1);
+  const idx = Math.max(0, Math.min(STAGES.length - 1, cur - 1));
+  gotoStage(idx);   // async fire-and-forget — load the saved stage
+}
+if (GR.active) {
+  GR.provideState(() => bridgeState());   // RequestState → emit current state
+  GR.onState(bridgeRestore);              // inbound GameState → restore
+  // app backgrounded / closing → flush a save (covers "뒤로가기" + OS suspend).
+  const _bgSave = () => { if (document.visibilityState === 'hidden') bridgeSaveState(); };
+  window.addEventListener('pagehide', () => bridgeSaveState());
+  document.addEventListener('visibilitychange', _bgSave);
+}
+
+// ── boot: editor play-test injection (L22) OR default stage001 ────────────────
+async function boot() {
+  // editor "Play test" injects a level via sessionStorage (same origin)
+  if (location.search.includes('playtest=1')) {
+    const raw = sessionStorage.getItem('__BB_PLAYTEST');
+    if (raw) { await loadLevel(JSON.parse(raw), DEBUG ? 12345 : null); if (GR.active) GR.gameStart(); return; }
+  }
+  // GAMEREELS: start the adventure at RT.from (1-based → ordered index from-1).
+  // Default from=1 → gotoStage(0) → unchanged (stage001 onboarding). gotoStage clamps.
+  await gotoStage(RT.from - 1);
+  // BOOT GATE (USER REPORT 2026-06-23): hold off grabbing until the first-load main-thread
+  // work has settled. A grab during the saturation window has its move/up dropped by iOS
+  // WKWebView → the piece lifts but is stuck. We unlock once the renderer sprites are ready
+  // AND the deferred asset bulk is merged (forced now, off the post-gate path) AND a paint
+  // has happened — so the very first grab only starts when touch events flow reliably.
+  if (input) {
+    input.setReady(false);
+    let unlocked = false;
+    const unlock = () => {
+      if (unlocked) return; unlocked = true;
+      try { if (window.__mergeAssetsLazy) window.__mergeAssetsLazy(); } catch (e) {}  // do the (cheap) lazy parse now, not after unlock
+      // EAGER audio init DURING the gate (off-grab): the webview allows autoplay (USER 2026-06-24),
+      // so we do the ~140ms audio unlock HERE rather than on the first grab gesture — neither the
+      // grab's pointerdown nor its pointerup touches audio → no main-thread hitch → no stuck block.
+      try { audio.unlockEager(); } catch (e) {}
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (input) input.setReady(true); }));
+    };
+    renderer.imgs.ready.then(unlock);
+    setTimeout(unlock, 3000);   // fallback — never stay locked out
+  }
+  // GAMEREELS: signal the webview host that the playable is up (no-op when GR inactive).
+  if (GR.active) GR.gameStart();
+}
+boot();
+
+// ── DEBUG API (window.__BB, §8) — only when ?debug=1 or window.__BB_DEBUG ─────
+if (DEBUG) {
+  window.__BB = {
+    async load(levelJson, seed) {
+      if (typeof levelJson === 'string') levelJson = await (await fetch(levelJson)).json();
+      await loadLevel(levelJson, seed);
+      return game.state();
+    },
+    state() { return game.state(); },
+    // logical placement (NO coordinate tap — L39). When a tutorial is active, also
+    // notify the controller so step gating advances exactly as a real drag would.
+    place(idx, x, y) {
+      const accept = !tutorial || tutorial.isAcceptableDrop(idx, x, y);
+      if (!accept) return { ok: false, reason: 'tutorial-gate' };
+      const r = game.placeAt(idx, x, y);
+      if (r.ok && tutorial) tutorial.onPlaced(r, idx);
+      // FIX C — mirror the real drop path: a refilling placement starts the host
+      // reveal delay (so QA can verify the new tray is suppressed during the window).
+      if (r.ok && r.refilled) startRefillReveal();
+      onChange();
+      return r;
+    },
+    // FIX C QA hooks: inspect/await the refill-reveal window deterministically.
+    refillState() { return { refillPending, traySuppressed: input ? input.traySuppressed : false }; },
+    // adventure progression: jump to an ordered stage (0=tutorial,1=collect,2=score)
+    async gotoStage(i) { await gotoStage(i); return { stageIndex, state: game.state() }; },
+    stageIndex() { return stageIndex; },
+    // HOST-DELEGATED PROGRESS QA hooks (USER REQ 2026-06-23): inspect the GameState
+    // payload, force a save (game→host), and simulate a host restore (host→game).
+    bridgeState() { return bridgeState(); },
+    saveProgress(curStage) { bridgeSaveState(curStage); return bridgeState(curStage); },
+    restore(data) { bridgeRestore(data); return { stageIndex, clearedStages, currency, items }; },
+    // tutorial introspection for QA (current step, gates, etc.)
+    tutorial() { return tutorial ? {
+      active: tutorial.active, stepIndex: tutorial.stepIndex,
+      steps: tutorial.steps.length, current: tutorial.current(),
+    } : null; },
+    // heuristic autoplay for n moves; returns trace
+    autoPlay(n) { return autoPlay(n); },
+    // feeder balance over many seeds (adaptive). returns aggregate stats.
+    feederStats(runs, opts) { return feederStats(runs, opts); },
+    // space-aware / multi-clear feeder probes over many seeds (deterministic).
+    feederProbe(opts) { return feederProbe(opts); },
+    // PERF (JOB 2): time the adaptive feeder on the heaviest realistic board
+    // (open board + a contiguous block of near-full lines — the best-of-N + multi-
+    // clear DFS worst case). Times `iters` real feedTray calls with performance.now()
+    // and returns ms stats. Pure measurement; touches no committed game state.
+    timeFeed(opts) { return timeFeed(opts); },
+    // hot-swap look (L16)
+    setLook(json) { renderer.setLook(json || {}); renderer.draw(game.state()); return renderer.look; },
+    // deterministic tray injection for QA (force known pieces; bypasses the feeder)
+    setTray(pieceIds, colors) {
+      const pal = Object.keys(game.palette);
+      game.tray = pieceIds.map((id, i) => {
+        const p = window.__BB_PIECE_BY_ID[id];
+        return p ? { id: p.id, sizeTag: p.sizeTag, cells: p.cells, color: (colors && colors[i]) || pal[0] } : null;
+      });
+      game._checkGameOver(); onChange(); return game.state();
+    },
+    // stage-clear sweep schedule (the boustrophedon SSOT) — for the PUP row-alternating
+    // assertion (deterministic; no DOM/timers). Mirrors what playStageClear lights up.
+    sweepSchedule() { return effects ? effects.sweepSchedule() : null; },
+    // expose internals for deeper QA
+    _game: () => game, _level: () => currentLevel, _seed: () => currentSeed,
+    _input: () => input, // drag-cancel QA: inspect the live drag state (CHANGE 2)
+    _effects: () => effects, // stage-clear sequence QA
+    // DEFERRED SCORE QA: snap the displayed score to logical NOW (the score-gain flies
+    // tick it up asynchronously; tests call this to read the marker deterministically).
+    reconcileScore() { reconcileDisplayed(); return _displayedScore; },
+  };
+  console.log('[__BB] debug API active (seed=' + currentSeed + ')');
+}
+
+// ── heuristic auto-player (used by __BB.autoPlay + feederStats) ───────────────
+// Greedy: for each tray piece, try every position; score = linesCleared*1000 +
+// (prefers filling rows/cols, lower fragmentation). Plays best move each step.
+//
+// MISSION-AWARE (so the verifier behaves like a real player): on a `collect`
+// mission it strongly rewards clears that actually COLLECT a gem, and—because gems
+// are now SPREAD ~1 per line (stage002 redesign)—it also rewards placements that
+// push a gem-bearing line toward completion. Without this the greedy player would
+// chase any easy clear and choke before collecting the spread-out gems. It changes
+// NOTHING about game rules or the feeder; it only picks better moves. (FIX B)
+function _gemBearingLineProgress(g) {
+  // For each row/col that contains an uncleared mission gem, how close it is to full
+  // (filledInLine / lineLen). Returns the SUM of those fractions — a placement that
+  // raises it is making progress toward a gem clear. Cheap: O(cells) once per call.
+  const b = g.board, cols = b.cols, rows = b.rows;
+  if (!b.items.size) return 0;
+  const gemRows = new Set(), gemCols = new Set();
+  for (const cell of b.items.keys()) { gemRows.add((cell / cols) | 0); gemCols.add(cell % cols); }
+  let prog = 0;
+  for (const y of gemRows) { let f = 0; for (let x = 0; x < cols; x++) if (b.cells[b.idx(x, y)] !== 0) f++; prog += f / cols; }
+  for (const x of gemCols) { let f = 0; for (let y = 0; y < rows; y++) if (b.cells[b.idx(x, y)] !== 0) f++; prog += f / rows; }
+  return prog;
+}
+// "focus": (closest gem line fullness)² → commit to finishing ONE gem line (kills the
+// long-tail wandering where the player keeps the board open but never finishes a gem).
+function _gemFocus(g) {
+  const b = g.board, cols = b.cols, rows = b.rows;
+  if (!b.items.size) return 0;
+  const gemRows = new Set(), gemCols = new Set();
+  for (const cell of b.items.keys()) { gemRows.add((cell / cols) | 0); gemCols.add(cell % cols); }
+  let best = 0;
+  for (const y of gemRows) { let f = 0; for (let x = 0; x < cols; x++) if (b.cells[b.idx(x, y)] !== 0) f++; const r = f / cols; if (r > best) best = r; }
+  for (const x of gemCols) { let f = 0; for (let y = 0; y < rows; y++) if (b.cells[b.idx(x, y)] !== 0) f++; const r = f / rows; if (r > best) best = r; }
+  return best * best;
+}
+function pickBestMove(g) {
+  let best = null;
+  const t = g.progress && g.progress.type;
+  const gemAware = (t === 'collect' || t === 'combo');
+  for (let ti = 0; ti < g.tray.length; ti++) {
+    const piece = g.tray[ti];
+    if (!piece) continue;
+    for (let oy = 0; oy < g.board.rows; oy++) {
+      for (let ox = 0; ox < g.board.cols; ox++) {
+        if (!g.board.canPlace(piece, ox, oy)) continue;
+        const snap = g.board.snapshot();
+        g.board.place(piece, ox, oy, 'x');
+        const lines = g.board.fullLines();
+        const lc = lines.rows.length + lines.cols.length;
+        let gemsCollected = 0;
+        if (lc > 0) { const ci = g.board.clearLines(lines); gemsCollected = ci.items.length; }
+        const fill = g.board.filledCount();
+        const maxReg = g.board.maxEmptyRegion();
+        // gem-line progress is read AFTER any clear (gems on cleared lines are gone).
+        const gemProg = gemAware ? _gemBearingLineProgress(g) : 0;
+        g.board.restore(snap);
+        // heuristic: clear lines, then keep board open (low fill, big empty region).
+        // On collect/combo a clear that COLLECTS a gem is worth far more than a plain
+        // clear, and we nudge toward completing gem-bearing lines (gemProg).
+        const sc = lc * 1000 + gemsCollected * 5000 + gemProg * 60 - fill * 2 + maxReg;
+        if (!best || sc > best.sc) best = { ti, ox, oy, sc };
+      }
+    }
+  }
+  return best;
+}
+
+// ── WHOLE-TRAY PLANNER (the strong auto-player; mirrors scripts/verify_lib.mjs) ──
+// A myopic one-piece greedy chokes more than a real player. The planner finds the best
+// ordering+placement of ALL present tray pieces (bounded DFS), scoring the FINAL board
+// (cleared lines + collected gems + openness + gem focus), and returns the first move of
+// the best plan. This makes __BB.autoPlay clear stages a careful player can clear, so the
+// in-browser spot-check agrees with the node 100-stage verifier. Determinism preserved.
+const _PLAN_POS_CAP = 9;
+function _evalBoardPlan(g, gemAware) {
+  const fill = g.board.filledCount(), maxReg = g.board.maxEmptyRegion();
+  const gemProg = gemAware ? _gemBearingLineProgress(g) : 0;
+  const focus = gemAware ? _gemFocus(g) : 0;
+  return gemProg * 120 + focus * 1200 - fill * 2 + maxReg;
+}
+function _candPlacements(g, piece) {
+  const cands = [];
+  const C = g.board.cells, cols = g.board.cols, rows = g.board.rows, cell = piece.cells;
+  for (let oy = 0; oy < rows; oy++) for (let ox = 0; ox < cols; ox++) {
+    let ok = true;
+    for (let q = 0; q < cell.length; q++) { const x = ox + cell[q][0], y = oy + cell[q][1]; if (x < 0 || y < 0 || x >= cols || y >= rows || C[y * cols + x] !== 0) { ok = false; break; } }
+    if (!ok) continue;
+    for (let q = 0; q < cell.length; q++) C[(oy + cell[q][1]) * cols + (ox + cell[q][0])] = 's';
+    let lc = 0, gems = 0;
+    for (let y = 0; y < rows; y++) { let full = true; const b = y * cols; for (let x = 0; x < cols; x++) if (C[b + x] === 0) { full = false; break; } if (full) { lc++; for (let x = 0; x < cols; x++) if (g.board.items.has(b + x)) gems++; } }
+    for (let x = 0; x < cols; x++) { let full = true; for (let y = 0; y < rows; y++) if (C[y * cols + x] === 0) { full = false; break; } if (full) { lc++; for (let y = 0; y < rows; y++) if (g.board.items.has(y * cols + x)) gems++; } }
+    for (let q = 0; q < cell.length; q++) C[(oy + cell[q][1]) * cols + (ox + cell[q][0])] = 0;
+    cands.push({ ox, oy, rank: lc * 1000 + gems * 6000 + (ox + oy) });
+  }
+  cands.sort((a, b) => b.rank - a.rank);
+  return cands.slice(0, _PLAN_POS_CAP);
+}
+function _planTray(g) {
+  const t = g.progress && g.progress.type;
+  const gemAware = (t === 'collect' || t === 'combo');
+  const trayIdx = [];
+  for (let i = 0; i < g.tray.length; i++) if (g.tray[i]) trayIdx.push(i);
+  let best = null;
+  const used = new Array(g.tray.length).fill(false);
+  const dfs = (accReward, firstMove) => {
+    let placedAny = false;
+    for (const ti of trayIdx) {
+      if (used[ti]) continue;
+      const piece = g.tray[ti];
+      const cands = _candPlacements(g, piece);
+      for (const c of cands) {
+        placedAny = true;
+        const snap = g.board.snapshot();
+        g.board.place(piece, c.ox, c.oy, 'x');
+        const lines = g.board.fullLines();
+        const lc = lines.rows.length + lines.cols.length;
+        let gems = 0; if (lc > 0) { const ci = g.board.clearLines(lines); gems = ci.items.length; }
+        used[ti] = true;
+        dfs(accReward + lc * 1000 + gems * 6000, firstMove || { ti, ox: c.ox, oy: c.oy });
+        used[ti] = false;
+        g.board.restore(snap);
+      }
+    }
+    if (!placedAny) {
+      const score = accReward + _evalBoardPlan(g, gemAware);
+      if (firstMove && (!best || score > best.score)) best = { firstMove, score };
+    }
+  };
+  dfs(0, null);
+  if (!best) { const mv = pickBestMove(g); return mv ? { ti: mv.ti, ox: mv.ox, oy: mv.oy } : null; }
+  return best.firstMove;
+}
+
+function autoPlay(n) {
+  const trace = [];
+  for (let k = 0; k < n; k++) {
+    if (game.over || game.cleared) break;
+    const mv = _planTray(game);          // strong whole-tray planner
+    if (!mv) break; // no legal move → game over will be detected
+    const r = game.placeAt(mv.ti, mv.ox, mv.oy);
+    trace.push({ move: k, ...mv, lines: r.lines, score: r.score, combo: r.combo,
+      mode: game.lastFeed?.mode, danger: +game.state().danger.toFixed(3) });
+  }
+  onChange();
+  return { moves: trace.length, over: game.over, stageClear: game.cleared, score: game.score, trace };
+}
+
+// ── feeder balance: adaptive vs pure-random baseline ─────────────────────────
+// Runs N seeded games to game-over (or a move cap) with the SAME greedy player.
+// `pureRandom:true` replaces the adaptive feeder with a uniform-random feeder
+// (same RNG stream type) to prove the adaptive feeder yields longer lifespans.
+function runOne(level, seed, pureRandom, moveCap, feederOverride) {
+  // feederOverride lets QA compare the NEW config against an OLD-config snapshot on
+  // the SAME seeds (CHANGE 2 before/after). Merged on top of the level's own feeder.
+  const lvl2 = feederOverride
+    ? { ...level, feeder: { ...(level.feeder || {}), ...feederOverride } }
+    : level;
+  const cfg = mergeConfig(DEFAULT_CONFIG, { feeder: lvl2.feeder || {} });
+  const rng = makeRng(seed);
+  const g = new Game(lvl2, rng);
+
+  if (pureRandom) {
+    // override the tray feeder with a uniform-random one (no D/T shaping, no guard)
+    g._refillTray = function () {
+      const res = feedUniform(this.board, {
+        rng: this.rng, palette: this.palette, trayCount: this.trayCount,
+      });
+      this.tray = res.pieces.slice();
+      this.lastFeed = res;
+      return res;
+    };
+    // re-seed first tray under the uniform feeder for a fair comparison
+    g.tray = []; g._refillTray(); g._checkGameOver();
+  }
+
+  // per-game telemetry (CHANGE 2 verification): clears, mode mix, dead-end (a refill
+  // that was NOT survivable — the feeder forced an unavoidable game-over), feed count.
+  let moves = 0, fillSum = 0, clears = 0, multiClears = 0;
+  let feeds = 0, pressureFeeds = 0, rescueFeeds = 0, deadEndFeeds = 0;
+  // count the initial tray's feed (the first refill ran in the Game constructor).
+  const countFeed = () => {
+    const lf = g.lastFeed; if (!lf || lf.mode === 'uniform' || lf.mode === 'tutorial') return;
+    feeds++;
+    if (lf.mode === 'pressure') pressureFeeds++;
+    if (lf.mode === 'rescue') rescueFeeds++;
+    // a "dead end" = a refill whose 3-piece set is NOT jointly survivable (the player
+    // is doomed to a forced game-over from that set). survivable===false flags it.
+    if (lf.survivable === false) deadEndFeeds++;
+  };
+  countFeed();
+  while (!g.over && !g.cleared && moves < moveCap) {
+    const mv = pickBestMove(g);
+    if (!mv) break;
+    const trayBefore = g.tray.filter((p) => p != null).length;
+    const r = g.placeAt(mv.ti, mv.ox, mv.oy);
+    if (r.lines > 0) { clears++; if (r.lines >= 2) multiClears++; }
+    // a refill happened iff the tray emptied on this placement (then was refilled).
+    const trayAfter = g.tray.filter((p) => p != null).length;
+    if (trayAfter > trayBefore - 1) countFeed(); // tray grew back → a fresh feed ran
+    fillSum += g.board.filledCount() / g.board.size;
+    moves++;
+  }
+  return {
+    moves, over: g.over, cleared: g.cleared, avgFill: fillSum / Math.max(1, moves),
+    clears, multiClears, feeds, pressureFeeds, rescueFeeds, deadEndFeeds,
+    clearsPerPlacement: clears / Math.max(1, moves),
+  };
+}
+
+// uniform feeder (baseline) — same shape as feedTray output, no adaptation.
+function feedUniform(board, ctx) {
+  // local import via module-level PIECES through feeder? keep simple: reuse window cache
+  const { rng, palette, trayCount } = ctx;
+  const PIECES = window.__BB_PIECES;
+  const paletteKeys = Object.keys(palette);
+  const pieces = [];
+  for (let i = 0; i < trayCount; i++) {
+    const p = PIECES[rng.int(PIECES.length)];
+    pieces.push({ id: p.id, sizeTag: p.sizeTag, cells: p.cells, color: paletteKeys[rng.int(paletteKeys.length)] });
+  }
+  return { pieces, mode: 'uniform', D: 0, T: 0, survivable: null, resamples: 0 };
+}
+
+function feederStats(runs, opts = {}) {
+  const moveCap = opts.moveCap || 400;
+  const level = currentLevel;
+  // for a fair lifespan test, use a SURVIVE-style sandbox: ignore mission clear so
+  // games end on game-over, not on completing the collect mission.
+  const sandbox = structuredClone(level);
+  sandbox.mission = { type: 'survive', target: { moves: 1e9 }, moves: 1e9 };
+  sandbox.items = [];
+  sandbox.tutorial = null; // feeder-balance must use the ADAPTIVE feeder, not the tutorial queue
+  sandbox.preset = [];     // start from an empty board for a fair lifespan comparison
+
+  const feederOverride = opts.feederOverride || null; // OLD-config snapshot for before/after
+  let adaptSum = 0, randSum = 0, adaptFill = 0, randFill = 0, adaptDeaths = 0, randDeaths = 0;
+  // CHANGE 2 telemetry aggregates (adaptive only — the balance knobs we tuned).
+  let aClears = 0, aMoves = 0, aMulti = 0, aFeeds = 0, aPressure = 0, aRescue = 0, aDeadEnd = 0;
+  for (let s = 0; s < runs; s++) {
+    const a = runOne(sandbox, 1000 + s, false, moveCap, feederOverride);
+    const r = runOne(sandbox, 1000 + s, true, moveCap);
+    adaptSum += a.moves; randSum += r.moves; adaptFill += a.avgFill; randFill += r.avgFill;
+    if (a.over) adaptDeaths++; if (r.over) randDeaths++;
+    aClears += a.clears; aMoves += a.moves; aMulti += a.multiClears;
+    aFeeds += a.feeds; aPressure += a.pressureFeeds; aRescue += a.rescueFeeds; aDeadEnd += a.deadEndFeeds;
+  }
+  return {
+    runs,
+    adaptive: {
+      avgLifespan: adaptSum / runs, avgFill: +(adaptFill / runs).toFixed(3), deathRate: +(adaptDeaths / runs).toFixed(3),
+      // CHANGE 2: dopamine + ease metrics over the whole adaptive corpus.
+      clearsPerPlacement: +(aClears / Math.max(1, aMoves)).toFixed(3),  // how often a placement clears ≥1 line
+      multiClearsPerPlacement: +(aMulti / Math.max(1, aMoves)).toFixed(3),
+      pressureFeedFrac: +(aPressure / Math.max(1, aFeeds)).toFixed(3),  // share of feeds in PRESSURE (want LOW)
+      rescueFeedFrac: +(aRescue / Math.max(1, aFeeds)).toFixed(3),
+      deadEndFeedFrac: +(aDeadEnd / Math.max(1, aFeeds)).toFixed(4),    // share of feeds that were a forced dead-end (want ~0)
+      totalFeeds: aFeeds, totalPlacements: aMoves,
+    },
+    random:   { avgLifespan: randSum / runs, avgFill: +(randFill / runs).toFixed(3), deathRate: +(randDeaths / runs).toFixed(3) },
+  };
+}
+
+// expose PIECES for the uniform baseline + setTray helper (debug-only)
+import('./engine/pieces.js?v=20260624123400').then((m) => {
+  window.__BB_PIECES = m.PIECES; window.__BB_PIECE_BY_ID = m.PIECE_BY_ID;
+  window.__BB_BIG_BOX_IDS = m.BIG_BOX_IDS; window.__BB_isBigBox = m.isBigBox;
+});
+
+// ── feeder PROBE: space-aware big-box bias + multi-line-clear potential ───────
+// Deterministic, seeded stats over many feeds on synthetic boards. Used by the
+// C5/C6 QA assertions (USER REQ #2/#3 verification). Builds a Board with a preset
+// fn, runs feedTray over `seeds` seeds, and aggregates:
+//   • bigBoxFeedFrac  = fraction of feeds whose 3-piece SET contains ≥1 big box
+//                       (square3/rect2x3/rect3x2).
+//   • multiClear2Frac = fraction of feeds whose SET can clear ≥2 lines together
+//                       (via setMaxClear on the SAME board the feed saw).
+// All boards are 8×8. Pure: each feed gets a fresh board (feedTray never mutates).
+function feederProbe(opts = {}) {
+  const seeds = opts.seeds || 240;
+  const baseSeed = opts.baseSeed || 5000;
+  const stageIndex = opts.stageIndex || 0;
+  const score = opts.score || 0;
+  const cfg = mergeConfig(DEFAULT_CONFIG, opts.feeder ? { feeder: opts.feeder } : {}).feeder;
+  const palette = { b: '#4FA3FF', g: '#5BD08B', r: '#FF6B6B' };
+  const PIECE_BY_ID = window.__BB_PIECE_BY_ID;
+  const isBigBox = window.__BB_isBigBox;
+
+  // preset describes filled cells: a function (board)→void, or array of [x,y].
+  const applyPreset = (board) => {
+    if (typeof opts.preset === 'function') opts.preset(board);
+    else if (Array.isArray(opts.preset)) for (const [x, y] of opts.preset) board.cells[board.idx(x, y)] = 'b';
+  };
+
+  let bigFeeds = 0, bigPieces = 0, totalPieces = 0, multi2 = 0, maxClearSum = 0;
+  let sampleAvg = 0;
+  for (let s = 0; s < seeds; s++) {
+    const board = new Board(8, 8);
+    applyPreset(board);
+    const rng = makeRng(baseSeed + s);
+    const res = feedTray(board, { rng, cfg, score, combo: 0, stageIndex, palette, trayCount: 3 });
+    let hasBig = false;
+    for (const p of res.pieces) { totalPieces++; if (isBigBox(p)) { bigPieces++; hasBig = true; } }
+    if (hasBig) bigFeeds++;
+    if (res.sampled) sampleAvg += res.sampled;
+    // re-create the same board the feed evaluated against, then measure the SET's
+    // joint multi-clear potential (the feed cleared nothing, so the board is intact).
+    const probe = new Board(8, 8); applyPreset(probe);
+    const set = res.pieces.map((p) => PIECE_BY_ID[p.id]);
+    const mc = setMaxClear(probe, set, cfg);
+    maxClearSum += mc;
+    if (mc >= 2) multi2++;
+  }
+  return {
+    seeds,
+    bigBoxFeedFrac: +(bigFeeds / seeds).toFixed(3),
+    bigBoxPieceFrac: +(bigPieces / totalPieces).toFixed(3),
+    multiClear2Frac: +(multi2 / seeds).toFixed(3),
+    avgMaxClear: +(maxClearSum / seeds).toFixed(2),
+    avgSampled: +(sampleAvg / seeds).toFixed(1),
+  };
+}
+
+// uniform-baseline multi-clear probe: same boards, but pieces drawn UNIFORMLY (no
+// adaptive bias) → shows how much the multi-clear bias lifts the ≥2 rate (USER #3).
+function feederProbeUniform(opts = {}) {
+  const seeds = opts.seeds || 240;
+  const baseSeed = opts.baseSeed || 5000;
+  const cfg = mergeConfig(DEFAULT_CONFIG, {}).feeder;
+  const palette = { b: '#4FA3FF', g: '#5BD08B', r: '#FF6B6B' };
+  const PIECES = window.__BB_PIECES, PIECE_BY_ID = window.__BB_PIECE_BY_ID, isBigBox = window.__BB_isBigBox;
+  const applyPreset = (board) => {
+    if (typeof opts.preset === 'function') opts.preset(board);
+    else if (Array.isArray(opts.preset)) for (const [x, y] of opts.preset) board.cells[board.idx(x, y)] = 'b';
+  };
+  let bigFeeds = 0, multi2 = 0;
+  for (let s = 0; s < seeds; s++) {
+    const rng = makeRng(baseSeed + s);
+    const res = feedUniform(new Board(8, 8), { rng, palette, trayCount: 3 });
+    if (res.pieces.some(isBigBox)) bigFeeds++;
+    const probe = new Board(8, 8); applyPreset(probe);
+    const set = res.pieces.map((p) => PIECE_BY_ID[p.id]);
+    if (setMaxClear(probe, set, cfg) >= 2) multi2++;
+  }
+  return { seeds, bigBoxFeedFrac: +(bigFeeds / seeds).toFixed(3), multiClear2Frac: +(multi2 / seeds).toFixed(3) };
+}
+window.__BB_feederProbeUniform = feederProbeUniform;
+
+// ── PERF (JOB 2): time the adaptive feeder on the heaviest realistic board ────
+// The refill (feedTray) is the most likely mobile hitch: best-of-N candidate sets ×
+// survivability DFS × bounded setMaxClear DFS. Its worst case is an OPEN board with
+// a contiguous block of NEAR-FULL lines (big boxes chain multi-clears → the DFS
+// explores the most). We build that board and time `iters` real feedTray calls with
+// performance.now(), returning ms stats. Pure measurement (feedTray never mutates a
+// committed board; each call gets its own seeded RNG so it's deterministic).
+function timeFeed(opts = {}) {
+  const iters = opts.iters || 60;
+  const baseSeed = opts.baseSeed || 9000;
+  const stageIndex = opts.stageIndex ?? 0;
+  const score = opts.score ?? 0;
+  const cfg = mergeConfig(DEFAULT_CONFIG, opts.feeder ? { feeder: opts.feeder } : {}).feeder;
+  const palette = { b: '#4FA3FF', g: '#5BD08B', r: '#FF6B6B' };
+
+  // WORST-CASE preset: leave the board mostly open but fill several rows to ONE empty
+  // cell each (near-full) so the multi-clear DFS has the most to chase. This mirrors
+  // the config comment's heaviest scenario (open board + contiguous near-full lines).
+  const buildWorst = (board) => {
+    // rows 4,5,6,7 near-full (cols 0..6 filled, col 7 empty) → 4 near-full lines, and
+    // col 7 itself becomes near-full too. Rows 0..3 stay open (roomy → big boxes).
+    for (let y = 4; y <= 7; y++) for (let x = 0; x <= 6; x++) board.cells[board.idx(x, y)] = 'b';
+  };
+  // A lighter "typical" board (mid-game, a couple near-full lines) for a realistic
+  // average alongside the worst case.
+  const buildTypical = (board) => {
+    for (let x = 0; x <= 6; x++) board.cells[board.idx(x, 7)] = 'b';      // 1 near-full row
+    for (let y = 0; y <= 4; y++) board.cells[board.idx(0, y)] = 'b';      // 1 near-full col-ish
+  };
+  const scenarios = { worst: buildWorst, typical: buildTypical, empty: () => {} };
+  const which = opts.scenario && scenarios[opts.scenario] ? { [opts.scenario]: scenarios[opts.scenario] } : scenarios;
+
+  const out = {};
+  for (const name of Object.keys(which)) {
+    const times = [];
+    // warm-up (JIT) — not counted.
+    for (let w = 0; w < 5; w++) {
+      const b = new Board(8, 8); which[name](b);
+      feedTray(b, { rng: makeRng(baseSeed - 1 - w), cfg, score, combo: 0, stageIndex, palette, trayCount: 3 });
+    }
+    for (let i = 0; i < iters; i++) {
+      const b = new Board(8, 8); which[name](b);
+      const rng = makeRng(baseSeed + i);
+      const t0 = performance.now();
+      feedTray(b, { rng, cfg, score, combo: 0, stageIndex, palette, trayCount: 3 });
+      times.push(performance.now() - t0);
+    }
+    times.sort((a, z) => a - z);
+    const sum = times.reduce((s, v) => s + v, 0);
+    out[name] = {
+      iters,
+      min: +times[0].toFixed(2),
+      median: +times[(times.length / 2) | 0].toFixed(2),
+      p95: +times[Math.min(times.length - 1, Math.floor(times.length * 0.95))].toFixed(2),
+      max: +times[times.length - 1].toFixed(2),
+      mean: +(sum / times.length).toFixed(2),
+    };
+  }
+  return out;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-100",
+  "index": 100,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 2,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": [
+      {
+        "gem": "gem_pentagon",
+        "count": 50
+      },
+      {
+        "gem": "gem_starburst",
+        "count": 50
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 100",
+    "hint": "Collect every gem type — from the board and the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.05,
+    "midClearWeight": 1.7,
+    "scoreFitsNow": 4,
+    "scoreAllFit": 6.5,
+    "clearGuaranteeFill": 0.12,
+    "dangerHi": 0.6,
+    "multiClearWeight": 6.5,
+    "sampleCount": 50,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.99,
+    "gemRate": 2.85
+  }
+}

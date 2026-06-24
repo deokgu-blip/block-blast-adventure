@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-085",
+  "index": 85,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 2,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "combo",
+    "goals": [
+      {
+        "score": 700
+      },
+      {
+        "collect": [
+          {
+            "gem": "gem_diamond",
+            "count": 19
+          },
+          {
+            "gem": "gem_pentagon",
+            "count": 19
+          }
+        ]
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 85",
+    "hint": "Reach 700 points AND collect the gems!"
+  },
+  "feeder": {
+    "rampPerStage": 0.043,
+    "midClearWeight": 1.93,
+    "scoreFitsNow": 4.15,
+    "scoreAllFit": 6.88,
+    "clearGuaranteeFill": 0.14,
+    "dangerHi": 0.57,
+    "multiClearWeight": 6.19,
+    "sampleCount": 47,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.991,
+    "gemRate": 2.64
+  }
+}

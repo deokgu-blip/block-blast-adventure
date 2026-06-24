@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-094",
+  "index": 94,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "combo",
+    "goals": [
+      {
+        "score": 760
+      },
+      {
+        "collect": [
+          {
+            "gem": "gem_diamond",
+            "count": 42
+          }
+        ]
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 94",
+    "hint": "Reach 760 points AND collect the gems!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0472,
+    "midClearWeight": 1.79,
+    "scoreFitsNow": 4.06,
+    "scoreAllFit": 6.65,
+    "clearGuaranteeFill": 0.13,
+    "dangerHi": 0.59,
+    "multiClearWeight": 6.38,
+    "sampleCount": 49,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.99,
+    "gemRate": 2.77
+  }
+}

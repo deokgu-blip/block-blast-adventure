@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-014",
+  "index": 14,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_diamond",
+      "count": 15
+    }
+  },
+  "intro": {
+    "title": "Level 14",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0096,
+    "midClearWeight": 3.02,
+    "scoreFitsNow": 4.88,
+    "scoreAllFit": 8.69,
+    "clearGuaranteeFill": 0.21,
+    "dangerHi": 0.44,
+    "multiClearWeight": 4.74,
+    "sampleCount": 32,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.994,
+    "gemRate": 1.67
+  }
+}

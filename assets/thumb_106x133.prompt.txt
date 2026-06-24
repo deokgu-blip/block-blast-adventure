@@ -1,0 +1,16 @@
+model: gpt-image-2 (OpenAI)  size: 1024x1536  quality: high  (opaque, no transparency)
+final: center-cropped to 1024x1280 ratio then resized to exactly 106x133 -> games/block-blast/assets/thumb_106x133.png
+
+PROMPT:
+Vertical portrait store thumbnail for a casual block & gem puzzle mobile game.
+A vibrant appealing arrangement of glossy 3D candy-jelly toy blocks (rounded
+bevelled cubes) in vibrant sky blue (#4FA3FF) with soft top-left highlights,
+stacked and grouped with several sparkling faceted gemstones: a bright blue cut
+diamond, a deep purple multi-point star-burst gem, a glossy red six-point star
+gem, and a green faceted gem. Chunky rounded super glossy plastic toy aesthetic,
+soft studio lighting, gentle soft shadows, high saturation candy colors, playful
+and eye-catching even at small size. Bold readable subject centered, filling the
+vertical frame. Clean bright vibrant blue vertical gradient background (lighter
+blue at top fading to richer deep blue at bottom). 3D rendered, polished, premium
+casual mobile game look. Absolutely NO text, NO letters, NO numbers, NO words,
+NO logos of any kind anywhere in the image. Pure illustration only.

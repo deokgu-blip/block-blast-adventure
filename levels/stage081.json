@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-081",
+  "index": 81,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 1,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "combo",
+    "goals": [
+      {
+        "score": 670
+      },
+      {
+        "collect": [
+          {
+            "gem": "gem_pentagon",
+            "count": 37
+          }
+        ]
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 81",
+    "hint": "Reach 670 points AND collect the gems!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0411,
+    "midClearWeight": 1.99,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 11,
+    "clearGuaranteeFill": 0.12,
+    "dangerHi": 0.57,
+    "multiClearWeight": 5.5,
+    "sampleCount": 44,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.997,
+    "gemRate": 2.59,
+    "surviveProbHi": 0.985
+  }
+}

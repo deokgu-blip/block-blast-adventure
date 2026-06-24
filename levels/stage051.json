@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-051",
+  "index": 51,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "score",
+    "target": {
+      "score": 1050
+    }
+  },
+  "intro": {
+    "title": "Level 51",
+    "hint": "Reach 1050 points!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0375,
+    "midClearWeight": 2,
+    "scoreFitsNow": 4.5,
+    "scoreAllFit": 7.75,
+    "clearGuaranteeFill": 0.17,
+    "dangerHi": 0.51,
+    "multiClearWeight": 5.5,
+    "sampleCount": 40,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.992,
+    "gemRate": 2.17
+  }
+}

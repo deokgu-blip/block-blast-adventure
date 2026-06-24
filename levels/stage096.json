@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-096",
+  "index": 96,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 1,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": [
+      {
+        "gem": "gem_star6",
+        "count": 48
+      },
+      {
+        "gem": "gem_pentagon",
+        "count": 48
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 96",
+    "hint": "Collect every gem type — from the board and the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0481,
+    "midClearWeight": 1.76,
+    "scoreFitsNow": 7,
+    "scoreAllFit": 15,
+    "clearGuaranteeFill": 0.08,
+    "dangerHi": 0.59,
+    "multiClearWeight": 7.5,
+    "sampleCount": 68,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.9995,
+    "gemRate": 2.79,
+    "surviveProbHi": 0.995
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-007",
+  "index": 7,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 2,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": [
+      {
+        "gem": "gem_pentagon",
+        "count": 4
+      },
+      {
+        "gem": "gem_starburst",
+        "count": 4
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 7",
+    "hint": "Collect every gem type — from the board and the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0063,
+    "midClearWeight": 3.12,
+    "scoreFitsNow": 4.95,
+    "scoreAllFit": 8.87,
+    "clearGuaranteeFill": 0.21,
+    "dangerHi": 0.43,
+    "multiClearWeight": 4.6,
+    "sampleCount": 31,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.995,
+    "gemRate": 1.57
+  }
+}

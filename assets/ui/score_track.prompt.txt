@@ -1,0 +1,4 @@
+model: gpt-image-2 (OpenAI)  size: 1536x1024  quality: high
+bg-keyout: fit_sprite --bg "#00ff00" --threshold 60 --target 880x130
+prompt:
+A horizontal glossy pill-shaped track frame for a game progress bar, centered horizontally, very wide and short capsule (roughly 7 to 1 width to height). Candy toy-block game UI style: OUTER frame is a NEUTRAL SILVER-GRAY glossy beveled rim (light cool gray, brushed metallic, soft bright white highlight along top edge, crisp light outline); INSIDE is an EMPTY recessed dark groove channel (deep cool charcoal gray, inner shadow, concave, hollow). Clean, simple, high contrast, neutral colors only (no purple/magenta/blue tint). NO text/numbers/icons, inside groove empty and dark. Solid flat pure green background (#00ff00), no drop shadow.

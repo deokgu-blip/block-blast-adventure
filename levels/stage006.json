@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-006",
+  "index": 6,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_star6",
+      "count": 7
+    }
+  },
+  "intro": {
+    "title": "Level 6",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0059,
+    "midClearWeight": 3.14,
+    "scoreFitsNow": 4.96,
+    "scoreAllFit": 8.9,
+    "clearGuaranteeFill": 0.22,
+    "dangerHi": 0.43,
+    "multiClearWeight": 4.58,
+    "sampleCount": 31,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.995,
+    "gemRate": 1.56
+  }
+}

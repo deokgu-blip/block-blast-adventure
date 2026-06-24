@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-012",
+  "index": 12,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_star6",
+      "count": 13
+    }
+  },
+  "intro": {
+    "title": "Level 12",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0087,
+    "midClearWeight": 3.05,
+    "scoreFitsNow": 4.9,
+    "scoreAllFit": 8.74,
+    "clearGuaranteeFill": 0.21,
+    "dangerHi": 0.44,
+    "multiClearWeight": 4.7,
+    "sampleCount": 32,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.994,
+    "gemRate": 1.64
+  }
+}

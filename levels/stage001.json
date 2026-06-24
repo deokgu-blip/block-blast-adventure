@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-001",
+  "index": 1,
+  "board": { "cols": 8, "rows": 8 },
+  "palette": { "b": "#3372B5", "p": "#8E44AD", "g": "#3E9E5E", "y": "#E0A516", "r": "#C0392B" },
+  "preset": [
+    [0, 3, "b"], [1, 3, "b"], [2, 3, "b"], [5, 3, "b"], [6, 3, "b"], [7, 3, "b"],
+    [0, 4, "b"], [1, 4, "b"], [2, 4, "b"], [5, 4, "b"], [6, 4, "b"], [7, 4, "b"],
+    [3, 0, "b"], [3, 1, "b"], [3, 2, "b"], [3, 5, "b"], [3, 6, "b"], [3, 7, "b"],
+    [4, 0, "b"], [4, 1, "b"], [4, 2, "b"], [4, 5, "b"], [4, 6, "b"], [4, 7, "b"]
+  ],
+  "items": [],
+  "mission": { "type": "score", "target": { "score": 100 } },
+  "tutorial": {
+    "enabled": true,
+    "fixedQueue": ["square2", "square2", "square2"],
+    "steps": [
+      { "text": "Drop the block in the center!", "pointTo": { "type": "tray", "index": 0 }, "dropAt": { "x": 3, "y": 3 }, "gate": "lineClear" }
+    ]
+  },
+  "intro": { "title": "Tap to clear!", "hint": "Drop the 2×2 block into the center hole to clear the cross." }
+}

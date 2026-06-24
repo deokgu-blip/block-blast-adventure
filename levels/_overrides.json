@@ -1,0 +1,470 @@
+{
+  "8": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "23": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "27": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "29": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "31": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "32": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "34": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "36": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "37": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "38": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "40": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "44": {
+    "_fl": 4,
+    "feeder": {
+      "surviveProbLo": 0.9998,
+      "surviveProbHi": 0.997,
+      "sampleCount": 80,
+      "clearGuaranteeFill": 0.06,
+      "multiClearWeight": 8.5,
+      "scoreFitsNow": 8,
+      "scoreAllFit": 17
+    }
+  },
+  "45": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "49": {
+    "_fl": 4,
+    "feeder": {
+      "surviveProbLo": 0.9998,
+      "surviveProbHi": 0.997,
+      "sampleCount": 80,
+      "clearGuaranteeFill": 0.06,
+      "multiClearWeight": 8.5,
+      "scoreFitsNow": 8,
+      "scoreAllFit": 17
+    }
+  },
+  "52": {
+    "_fl": 3,
+    "feeder": {
+      "surviveProbLo": 0.9995,
+      "surviveProbHi": 0.995,
+      "sampleCount": 68,
+      "clearGuaranteeFill": 0.08,
+      "multiClearWeight": 7.5,
+      "scoreFitsNow": 7,
+      "scoreAllFit": 15
+    }
+  },
+  "54": {
+    "_fl": 3,
+    "feeder": {
+      "surviveProbLo": 0.9995,
+      "surviveProbHi": 0.995,
+      "sampleCount": 68,
+      "clearGuaranteeFill": 0.08,
+      "multiClearWeight": 7.5,
+      "scoreFitsNow": 7,
+      "scoreAllFit": 15
+    }
+  },
+  "56": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "60": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "63": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "66": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "67": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "68": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "69": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "70": {
+    "_fl": 3,
+    "feeder": {
+      "surviveProbLo": 0.9995,
+      "surviveProbHi": 0.995,
+      "sampleCount": 68,
+      "clearGuaranteeFill": 0.08,
+      "multiClearWeight": 7.5,
+      "scoreFitsNow": 7,
+      "scoreAllFit": 15
+    }
+  },
+  "73": {
+    "_fl": 3,
+    "feeder": {
+      "surviveProbLo": 0.9995,
+      "surviveProbHi": 0.995,
+      "sampleCount": 68,
+      "clearGuaranteeFill": 0.08,
+      "multiClearWeight": 7.5,
+      "scoreFitsNow": 7,
+      "scoreAllFit": 15
+    }
+  },
+  "74": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "75": {
+    "_fl": 4,
+    "feeder": {
+      "surviveProbLo": 0.9998,
+      "surviveProbHi": 0.997,
+      "sampleCount": 80,
+      "clearGuaranteeFill": 0.06,
+      "multiClearWeight": 8.5,
+      "scoreFitsNow": 8,
+      "scoreAllFit": 17
+    }
+  },
+  "76": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "77": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "78": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "79": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "80": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "81": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "83": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "84": {
+    "_fl": 2,
+    "feeder": {
+      "surviveProbLo": 0.999,
+      "surviveProbHi": 0.99,
+      "sampleCount": 56,
+      "clearGuaranteeFill": 0.1,
+      "multiClearWeight": 6.5,
+      "scoreFitsNow": 6,
+      "scoreAllFit": 13
+    }
+  },
+  "90": {
+    "_fl": 3,
+    "feeder": {
+      "surviveProbLo": 0.9995,
+      "surviveProbHi": 0.995,
+      "sampleCount": 68,
+      "clearGuaranteeFill": 0.08,
+      "multiClearWeight": 7.5,
+      "scoreFitsNow": 7,
+      "scoreAllFit": 15
+    }
+  },
+  "91": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  },
+  "96": {
+    "_fl": 3,
+    "feeder": {
+      "surviveProbLo": 0.9995,
+      "surviveProbHi": 0.995,
+      "sampleCount": 68,
+      "clearGuaranteeFill": 0.08,
+      "multiClearWeight": 7.5,
+      "scoreFitsNow": 7,
+      "scoreAllFit": 15
+    }
+  },
+  "98": {
+    "_fl": 1,
+    "feeder": {
+      "surviveProbLo": 0.997,
+      "surviveProbHi": 0.985,
+      "sampleCount": 44,
+      "clearGuaranteeFill": 0.12,
+      "multiClearWeight": 5.5,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 11
+    }
+  }
+}

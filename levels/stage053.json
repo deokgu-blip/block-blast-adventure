@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-053",
+  "index": 53,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_star6",
+      "count": 53
+    }
+  },
+  "intro": {
+    "title": "Level 53",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0279,
+    "midClearWeight": 2.42,
+    "scoreFitsNow": 4.48,
+    "scoreAllFit": 7.7,
+    "clearGuaranteeFill": 0.17,
+    "dangerHi": 0.51,
+    "multiClearWeight": 5.54,
+    "sampleCount": 40,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.992,
+    "gemRate": 2.2
+  }
+}

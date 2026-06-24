@@ -1,0 +1,12 @@
+PROVIDER: Byteplus Seedance (ModelArk) — model seedance-1-0-pro-250528
+MODE: image-to-video (seed first frame = seed_clipB.png — a clean mid-action frame from clip A)
+RATIO: 9:16   DUR: 5s
+SEED IMAGE: /Users/supercent/nanoclo/나노클로-B/games/block-blast/assets/promo/seed_clipB.png
+
+PROMPT:
+Climax of a satisfying block puzzle clear. Multiple full rows on the 8x8 dark navy grid flash bright
+and clear at once with a big juicy white sparkle burst, glossy candy-jelly blue toy blocks pop and
+scatter, glossy gems (blue diamonds, red stars) fly up and get collected with a glowing trail.
+Springy bouncy motion, premium casual mobile feel, vivid saturated colors, clean blue gradient
+background, soft shadows, lots of satisfying particles. Vertical portrait mobile composition, gentle
+camera. NO text, NO captions, NO letters, NO numbers, NO logos, NO watermark, NO UI labels, NO hands.

@@ -1,0 +1,13 @@
+PROVIDER: Byteplus Seedance (ModelArk) — model seedance-1-0-pro-250528
+MODE: image-to-video (seed first frame = seed_keyvisual.png — clean text-free game key-visual)
+RATIO: 9:16   DUR: 5s
+SEED IMAGE: /Users/supercent/nanoclo/나노클로-B/games/block-blast/assets/promo/seed_keyvisual.png
+
+PROMPT:
+Satisfying casual mobile block puzzle gameplay. Glossy candy-jelly blue toy blocks with rounded
+bevel edges gently drop and snap into an 8x8 dark navy grid board. A full row lights up and clears
+with a juicy bright pop and white sparkles bursting upward, glossy gems (blue diamond, red star)
+collected with a soft glow. Smooth springy motion, premium casual mobile feel, colorful and bright,
+clean blue gradient background, soft shadows, vivid saturated colors. Camera holds steady on the
+board, gentle subtle zoom. Vertical portrait mobile composition. NO text, NO captions, NO letters,
+NO numbers, NO logos, NO watermark, NO UI labels, NO hands — purely the blocks, grid, gems and effects.

@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-002",
+  "index": 2,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_starburst",
+      "count": 3
+    }
+  },
+  "intro": {
+    "title": "Level 2",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.004,
+    "midClearWeight": 3.2,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 9,
+    "clearGuaranteeFill": 0.22,
+    "dangerHi": 0.42,
+    "multiClearWeight": 4.5,
+    "sampleCount": 30,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.995,
+    "gemRate": 1.5
+  }
+}

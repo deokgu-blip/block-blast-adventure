@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Block Blast — Level Editor</title>
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif; background:#0c1330; color:#dfe6ff;
+    display:flex; min-height:100vh; }
+  /* WYSIWYG: editor controls on the SIDE (L12), board centered like the game */
+  #side{ width:300px; padding:16px; background:#121b3a; overflow-y:auto; border-right:1px solid #233; }
+  #main{ flex:1; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; }
+  h1{ font-size:18px; margin-bottom:12px; color:#ffc23d; }
+  h2{ font-size:13px; margin:14px 0 6px; color:#9fb0d8; text-transform:uppercase; letter-spacing:.5px; }
+  label{ display:block; font-size:12px; margin:6px 0 2px; color:#9fb0d8; }
+  input,select,textarea,button{ font:inherit; }
+  input,select,textarea{ width:100%; padding:6px 8px; border-radius:6px; border:1px solid #2a3a5c;
+    background:#0c1330; color:#dfe6ff; font-size:13px; }
+  textarea{ height:120px; font-family:ui-monospace,Menlo,monospace; font-size:11px; }
+  button{ padding:8px 12px; border-radius:8px; border:none; background:#4FA3FF; color:#fff; font-weight:700; cursor:pointer; margin:4px 2px 0 0; }
+  button.alt{ background:#5BD08B; color:#06210f; } button.warn{ background:#444; }
+  .row{ display:flex; gap:6px; } .row > *{ flex:1; }
+  #tools button{ font-size:12px; padding:6px 8px; }
+  #tools button.active{ outline:3px solid #ffc23d; }
+  .swatch{ display:inline-flex; align-items:center; gap:4px; }
+  .swatch span{ width:18px; height:18px; border-radius:4px; border:1px solid #fff4; display:inline-block; }
+  #board{ background:#1b2740; border-radius:8px; cursor:pointer; }
+  #status{ font-size:12px; color:#9fb0d8; min-height:16px; }
+  .hint{ font-size:11px; color:#6a7aa8; margin-top:2px; }
+</style>
+</head>
+<body>
+  <div id="side">
+    <h1>Level Editor</h1>
+
+    <h2>Meta</h2>
+    <label>id</label><input id="f-id" value="stage-003" />
+    <div class="row"><div><label>index</label><input id="f-index" type="number" value="3" /></div></div>
+    <div class="row">
+      <div><label>cols</label><input id="f-cols" type="number" value="8" min="4" max="16" /></div>
+      <div><label>rows</label><input id="f-rows" type="number" value="8" min="4" max="16" /></div>
+    </div>
+
+    <h2>Mission</h2>
+    <label>type</label>
+    <select id="f-mtype">
+      <option value="collect">collect</option>
+      <option value="score">score</option>
+      <option value="combo">combo (score + gems)</option>
+      <option value="lines">lines</option>
+      <option value="clearCells">clearCells</option>
+      <option value="survive">survive</option>
+      <option value="tutorial">tutorial</option>
+    </select>
+    <label>target item (collect / combo gem)</label><input id="f-mitem" value="apple" />
+    <label>target count / moves (combo = gem count)</label><input id="f-mcount" type="number" value="12" />
+    <label>combo score goal (combo only)</label><input id="f-mscore" type="number" value="300" />
+
+    <h2>Paint tool</h2>
+    <div id="tools"></div>
+    <div class="hint">Click/drag the board to paint. Pick a color to fill cells, "apple" to place an item, or "erase".</div>
+
+    <h2>JSON</h2>
+    <textarea id="f-json" spellcheck="false"></textarea>
+    <div class="row">
+      <button id="b-build" class="alt">Build JSON ↑</button>
+      <button id="b-apply">Apply JSON ↓</button>
+    </div>
+    <div class="row">
+      <button id="b-save">Save .json</button>
+      <button id="b-load" class="warn">Load file</button>
+    </div>
+    <input id="file-in" type="file" accept="application/json" style="display:none" />
+    <button id="b-play" class="alt" style="width:100%; margin-top:8px;">▶ Play test</button>
+    <div id="status"></div>
+  </div>
+
+  <div id="main">
+    <canvas id="board" width="480" height="480"></canvas>
+    <div id="status2" style="font-size:12px;color:#9fb0d8;"></div>
+  </div>
+
+<script type="module">
+import { validateLevel, readPresetCell } from '../engine/schema.js?v=20260624123400';
+
+const PALETTE = { b:'#4FA3FF', p:'#B86BFF', g:'#5BD08B', y:'#FFC23D', r:'#FF6B6B' };
+const el = (id) => document.getElementById(id);
+const canvas = el('board'), ctx = canvas.getContext('2d');
+
+let cols = 8, rows = 8;
+let cells = {};   // "x,y" -> colorKey
+let items = {};   // "x,y" -> itemId
+let tool = 'b';   // current paint tool: a palette key | 'apple' | 'erase'
+
+// ── tool palette ──────────────────────────────────────────────────────────
+function buildTools() {
+  const t = el('tools'); t.innerHTML = '';
+  for (const k of Object.keys(PALETTE)) {
+    const b = document.createElement('button');
+    b.className = 'swatch'; b.dataset.tool = k;
+    b.innerHTML = `<span style="background:${PALETTE[k]}"></span>${k}`;
+    b.onclick = () => setTool(k); t.appendChild(b);
+  }
+  for (const extra of ['apple', 'erase']) {
+    const b = document.createElement('button'); b.dataset.tool = extra; b.textContent = extra;
+    b.onclick = () => setTool(extra); t.appendChild(b);
+  }
+  setTool('b');
+}
+function setTool(k) {
+  tool = k;
+  [...document.querySelectorAll('#tools button')].forEach((b) => b.classList.toggle('active', b.dataset.tool === k));
+}
+
+// ── board render ────────────────────────────────────────────────────────────
+function drawBoard() {
+  const C = Math.floor(Math.min(480 / cols, 480 / rows));
+  canvas.width = C * cols; canvas.height = C * rows;
+  ctx.fillStyle = '#1b2740'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+    const key = `${x},${y}`;
+    const g = 2, px = x*C+g, py = y*C+g, sz = C-g*2;
+    if (cells[key]) { ctx.fillStyle = PALETTE[cells[key]] || '#888'; rr(px,py,sz,sz,4); ctx.fill(); }
+    else { ctx.fillStyle = '#2a3a5c'; rr(px,py,sz,sz,4); ctx.fill(); }
+    if (items[key]) {
+      ctx.beginPath(); ctx.arc(px+sz/2, py+sz/2, sz*0.26, 0, Math.PI*2);
+      ctx.fillStyle = '#ff5b5b'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    }
+  }
+}
+function rr(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+// ── painting ──────────────────────────────────────────────────────────────
+let painting = false;
+function paintAt(ev) {
+  const r = canvas.getBoundingClientRect();
+  const C = canvas.width / cols;
+  const x = Math.floor((ev.clientX - r.left) / C), y = Math.floor((ev.clientY - r.top) / C);
+  if (x < 0 || y < 0 || x >= cols || y >= rows) return;
+  const key = `${x},${y}`;
+  if (tool === 'erase') { delete cells[key]; delete items[key]; }
+  else if (tool === 'apple') { items[key] = 'apple'; }
+  else { cells[key] = tool; }
+  drawBoard();
+}
+canvas.addEventListener('pointerdown', (e) => { painting = true; paintAt(e); });
+canvas.addEventListener('pointermove', (e) => { if (painting) paintAt(e); });
+window.addEventListener('pointerup', () => { painting = false; });
+
+// ── build / apply JSON ──────────────────────────────────────────────────────
+function buildJSON() {
+  const mtype = el('f-mtype').value;
+  const count = parseInt(el('f-mcount').value, 10) || 0;
+  const mission = { type: mtype, moves: 0 };
+  if (mtype === 'collect') mission.target = { item: el('f-mitem').value, count };
+  else if (mtype === 'combo') {
+    // combo (GAME_DESIGN §12.2): a score goal AND a gem collect goal together.
+    const sc = parseInt(el('f-mscore').value, 10) || 0;
+    delete mission.moves;
+    mission.goals = [{ score: sc }, { collect: [{ gem: el('f-mitem').value, count }] }];
+  } else if (mtype === 'survive') { mission.target = { moves: count }; mission.moves = count; }
+  else mission.target = { count };
+
+  const obj = {
+    schemaVersion: 1, id: el('f-id').value, index: parseInt(el('f-index').value, 10) || 0,
+    board: { cols, rows }, palette: PALETTE,
+    preset: Object.entries(cells).map(([k, v]) => { const [x, y] = k.split(',').map(Number); return [x, y, v]; }),
+    items: Object.entries(items).map(([k, v]) => { const [x, y] = k.split(',').map(Number); return [x, y, v]; }),
+    mission,
+    intro: { title: 'Level ' + (el('f-index').value), hint: '' },
+  };
+  el('f-json').value = JSON.stringify(obj, null, 2);
+  validate(obj);
+  return obj;
+}
+
+function applyJSON() {
+  try {
+    const obj = JSON.parse(el('f-json').value);
+    cols = obj.board.cols; rows = obj.board.rows;
+    el('f-id').value = obj.id; el('f-index').value = obj.index;
+    el('f-cols').value = cols; el('f-rows').value = rows;
+    el('f-mtype').value = obj.mission.type;
+    if (obj.mission.type === 'combo' && Array.isArray(obj.mission.goals)) {
+      // populate the combo fields from goals (score goal + first gem collect goal).
+      const sg = obj.mission.goals.find((g) => g && Number.isInteger(g.score));
+      const cg = obj.mission.goals.find((g) => g && 'collect' in g);
+      const first = cg ? (Array.isArray(cg.collect) ? cg.collect[0] : cg.collect) : null;
+      el('f-mscore').value = sg ? sg.score : 0;
+      el('f-mitem').value = first ? (first.gem || first.item || 'gem_star6') : 'gem_star6';
+      el('f-mcount').value = first ? (first.count || 0) : 0;
+    } else {
+      const t = obj.mission.target || {};
+      el('f-mitem').value = (Array.isArray(t) ? (t[0]?.gem || t[0]?.item) : (t.item || t.gem)) || 'apple';
+      el('f-mcount').value = (Array.isArray(t) ? (t[0]?.count) : (t.count ?? t.moves)) ?? obj.mission.moves ?? 0;
+    }
+    cells = {}; items = {};
+    // preset entries may be legacy [x,y,color] arrays OR {x,y,color,gem?} objects —
+    // read both via the schema's SSOT helper. An embedded gem also shows as an item
+    // marker so the editor renders the gem-in-block (color cell + gem overlay).
+    (obj.preset || []).forEach((raw) => {
+      const c = readPresetCell(raw); if (!c) return;
+      cells[`${c.x},${c.y}`] = c.color;
+      if (c.gem != null) items[`${c.x},${c.y}`] = c.gem;
+    });
+    (obj.items || []).forEach(([x, y, it]) => items[`${x},${y}`] = it);
+    drawBoard(); validate(obj);
+  } catch (e) { el('status').textContent = 'JSON parse error: ' + e.message; el('status').style.color = '#ff6b6b'; }
+}
+
+function validate(obj) {
+  const { ok, errors } = validateLevel(obj);
+  el('status').style.color = ok ? '#5BD08B' : '#ff6b6b';
+  el('status').textContent = ok ? '✓ valid level' : ('✗ ' + errors.join('; '));
+  return ok;
+}
+
+// ── save / load / play ──────────────────────────────────────────────────────
+el('b-build').onclick = buildJSON;
+el('b-apply').onclick = applyJSON;
+el('b-save').onclick = () => {
+  const obj = buildJSON();
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = obj.id + '.json'; a.click();
+};
+el('b-load').onclick = () => el('file-in').click();
+el('file-in').onchange = (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader(); rd.onload = () => { el('f-json').value = rd.result; applyJSON(); }; rd.readAsText(f);
+};
+el('b-play').onclick = () => {
+  const obj = buildJSON();
+  if (!validate(obj)) return;
+  // open the game with the level injected via sessionStorage (same origin, L22)
+  sessionStorage.setItem('__BB_PLAYTEST', JSON.stringify(obj));
+  window.open('../index.html?playtest=1&debug=1', '_blank');
+};
+
+['f-cols', 'f-rows'].forEach((id) => el(id).addEventListener('change', () => {
+  cols = parseInt(el('f-cols').value, 10) || 8; rows = parseInt(el('f-rows').value, 10) || 8;
+  drawBoard();
+}));
+
+// ── boot: load stage001 as a starting point ──────────────────────────────────
+buildTools();
+fetch('../levels/stage001.json').then((r) => r.json()).then((lvl) => {
+  el('f-json').value = JSON.stringify(lvl, null, 2); applyJSON();
+}).catch(() => { drawBoard(); });
+</script>
+</body>
+</html>

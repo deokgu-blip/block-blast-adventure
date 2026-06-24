@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-009",
+  "index": 9,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 1,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_pentagon",
+      "count": 10
+    }
+  },
+  "intro": {
+    "title": "Level 9",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0073,
+    "midClearWeight": 3.09,
+    "scoreFitsNow": 4.93,
+    "scoreAllFit": 8.82,
+    "clearGuaranteeFill": 0.21,
+    "dangerHi": 0.43,
+    "multiClearWeight": 4.64,
+    "sampleCount": 31,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.995,
+    "gemRate": 1.6
+  }
+}

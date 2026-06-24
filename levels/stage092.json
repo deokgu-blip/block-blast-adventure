@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-092",
+  "index": 92,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 2,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_diamond_green",
+      "count": 92
+    }
+  },
+  "intro": {
+    "title": "Level 92",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0462,
+    "midClearWeight": 1.82,
+    "scoreFitsNow": 4.08,
+    "scoreAllFit": 6.7,
+    "clearGuaranteeFill": 0.13,
+    "dangerHi": 0.59,
+    "multiClearWeight": 6.34,
+    "sampleCount": 48,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.99,
+    "gemRate": 2.74
+  }
+}

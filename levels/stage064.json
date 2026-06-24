@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-064",
+  "index": 64,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 3,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "score",
+    "target": {
+      "score": 1300
+    }
+  },
+  "intro": {
+    "title": "Level 64",
+    "hint": "Reach 1300 points!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0408,
+    "midClearWeight": 1.89,
+    "scoreFitsNow": 4.37,
+    "scoreAllFit": 7.42,
+    "clearGuaranteeFill": 0.16,
+    "dangerHi": 0.53,
+    "multiClearWeight": 5.77,
+    "sampleCount": 43,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.992,
+    "gemRate": 2.35
+  }
+}

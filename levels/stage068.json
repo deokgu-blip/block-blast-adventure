@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-068",
+  "index": 68,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 1,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_star6"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": [
+      {
+        "gem": "gem_pentagon",
+        "count": 34
+      },
+      {
+        "gem": "gem_star6",
+        "count": 34
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 68",
+    "hint": "Collect every gem type — from the board and the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.035,
+    "midClearWeight": 2.19,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 11,
+    "clearGuaranteeFill": 0.12,
+    "dangerHi": 0.54,
+    "multiClearWeight": 5.5,
+    "sampleCount": 44,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.997,
+    "gemRate": 2.41,
+    "surviveProbHi": 0.985
+  }
+}

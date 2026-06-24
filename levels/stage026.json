@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-026",
+  "index": 26,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 2,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_starburst",
+      "count": 27
+    }
+  },
+  "intro": {
+    "title": "Level 26",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0153,
+    "midClearWeight": 2.83,
+    "scoreFitsNow": 4.76,
+    "scoreAllFit": 8.39,
+    "clearGuaranteeFill": 0.2,
+    "dangerHi": 0.46,
+    "multiClearWeight": 4.99,
+    "sampleCount": 35,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.994,
+    "gemRate": 1.83
+  }
+}

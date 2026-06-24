@@ -1,0 +1,23 @@
+# Block Blast Adventure — candy block recolor recipe (reproducible)
+# Source of truth: clean blue base block_b.webp (256x256), analytic recolor only (NO AI regen).
+# Tool: tools/lib/recolor_hue_lock.mjs  (hue-converge + chroma-scale + L-preserve, edge-bleed free)
+# Goal: VIVID glossy candy blocks matching real Block Blast reference
+#       (refs in /Users/supercent/.claude/channels/discord-나노클로-B/inbox/ — 1782114415577*, 1782114416067*)
+# Reference fill colors sampled (Lab): red L48/C71 hue31, orange L67/C78 hue59,
+#   yellow L80/C72 hue87, green L71/C85 hue139, purple L52/C78 hue-49,
+#   cyan L72/C40 hue-120, blue L45/C87 hue-63.
+#
+# BASE blue boost (block_b.webp recolored to itself, deeper royal + higher chroma; still clearly blue):
+BASE=games/block-blast/assets/sprites/block_b.webp   # original clean base (kept as recolor source)
+node tools/lib/recolor_hue_lock.mjs $BASE block_b.webp --to "#2f63f2" --converge 0.92 --protect 16 --chroma 2.2 --light -14
+#
+# CANDY colors — all recolored FROM the ORIGINAL clean blue base:
+node tools/lib/recolor_hue_lock.mjs $BASE block_r.webp --to "#d23436" --converge 0.95 --protect 18 --chroma 1.05 --light -22   # deep coral-scarlet red (deepened L to kill pastel-pink)
+node tools/lib/recolor_hue_lock.mjs $BASE block_o.webp --to "#f9821f" --converge 0.92 --protect 18 --chroma 1.18 --light -2    # vivid orange
+node tools/lib/recolor_hue_lock.mjs $BASE block_y.webp --to "#f0c032" --converge 0.97 --protect 18 --chroma 1.00 --light  2    # golden amber (full converge -> no green tint, clean amber border)
+node tools/lib/recolor_hue_lock.mjs $BASE block_g.webp --to "#36c83e" --converge 0.92 --protect 18 --chroma 1.18 --light -2    # vivid grass green
+node tools/lib/recolor_hue_lock.mjs $BASE block_p.webp --to "#9a5ce2" --converge 0.93 --protect 16 --chroma 1.60 --light -2    # vivid violet
+node tools/lib/recolor_hue_lock.mjs $BASE block_c.webp --to "#2fbdee" --converge 0.93 --protect 16 --chroma 1.70 --light -4    # vivid sky cyan
+#
+# Result fill chroma (Lab C): blue~72 red~75 orange~72 yellow~73 green~89 cyan~47 purple~80  (vs prior pale: red46 cyan39 purple55 blue40)
+# All 256x256 webp, transparent bg, top-left highlight + rounded bevel + clean SAME-hue border preserved.

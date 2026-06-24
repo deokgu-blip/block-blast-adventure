@@ -1,0 +1,4 @@
+model: gpt-image-2 (OpenAI)  size: 1024x1024  quality: high
+bg-keyout: fit_sprite --bg "#00ff00" --threshold 60 --target 256x256
+prompt:
+A single glossy candy toy-block style circular game badge, centered, filling most of the square frame. Premium gold/amber jewel button: smooth radial gradient from bright warm gold at top to deeper amber at bottom, soft beveled 3D dome, glossy candy sheen with a soft bright highlight sweep across the upper area, crisp bright white-to-pale-gold rim outline around the edge. The center of the disc is CLEAN, smooth and fairly uniform (no text, no number, no inner pattern, no icon) so a number can be placed on top later. High contrast, simple and crisp readable as a tiny 40px mobile HUD element. NO text, NO numbers, NO letters. Solid flat pure green background (#00ff00), no shadow, no gradient in the background.

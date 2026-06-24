@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-098",
+  "index": 98,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_diamond_green"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": [
+      {
+        "gem": "gem_pentagon",
+        "count": 33
+      },
+      {
+        "gem": "gem_diamond_green",
+        "count": 33
+      },
+      {
+        "gem": "gem_diamond",
+        "count": 33
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 98",
+    "hint": "Collect every gem type — from the board and the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0491,
+    "midClearWeight": 1.73,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 11,
+    "clearGuaranteeFill": 0.12,
+    "dangerHi": 0.6,
+    "multiClearWeight": 5.5,
+    "sampleCount": 44,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.997,
+    "gemRate": 2.82,
+    "surviveProbHi": 0.985
+  }
+}

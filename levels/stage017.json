@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-017",
+  "index": 17,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 2,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "score",
+    "target": {
+      "score": 390
+    }
+  },
+  "intro": {
+    "title": "Level 17",
+    "hint": "Reach 390 points!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0288,
+    "midClearWeight": 2.28,
+    "scoreFitsNow": 4.85,
+    "scoreAllFit": 8.62,
+    "clearGuaranteeFill": 0.2,
+    "dangerHi": 0.45,
+    "multiClearWeight": 4.81,
+    "sampleCount": 33,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.994,
+    "gemRate": 1.71
+  }
+}

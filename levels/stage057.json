@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-057",
+  "index": 57,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 1,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_starburst"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "combo",
+    "goals": [
+      {
+        "score": 500
+      },
+      {
+        "collect": [
+          {
+            "gem": "gem_starburst",
+            "count": 13
+          },
+          {
+            "gem": "gem_star6",
+            "count": 13
+          }
+        ]
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 57",
+    "hint": "Reach 500 points AND collect the gems!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0298,
+    "midClearWeight": 2.36,
+    "scoreFitsNow": 4.44,
+    "scoreAllFit": 7.6,
+    "clearGuaranteeFill": 0.16,
+    "dangerHi": 0.52,
+    "multiClearWeight": 5.62,
+    "sampleCount": 41,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.992,
+    "gemRate": 2.26
+  }
+}

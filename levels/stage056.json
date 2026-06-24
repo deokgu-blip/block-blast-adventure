@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-056",
+  "index": 56,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 0,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "color": "b",
+      "gem": "gem_pentagon"
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "collect",
+    "target": {
+      "gem": "gem_pentagon",
+      "count": 56
+    }
+  },
+  "intro": {
+    "title": "Level 56",
+    "hint": "Clear the gem lines — more gems keep coming in the queue!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0293,
+    "midClearWeight": 2.37,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 11,
+    "clearGuaranteeFill": 0.12,
+    "dangerHi": 0.52,
+    "multiClearWeight": 5.5,
+    "sampleCount": 44,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.997,
+    "gemRate": 2.24,
+    "surviveProbHi": 0.985
+  }
+}

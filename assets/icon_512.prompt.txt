@@ -1,0 +1,15 @@
+model: gpt-image-2 (OpenAI)  size: 1024x1024  quality: high  (opaque, no transparency)
+final: resized to exactly 512x512 -> games/block-blast/assets/icon_512.png
+
+PROMPT:
+Mobile game app icon for a casual block & gem puzzle game. A small balanced cluster
+of glossy 3D candy-jelly toy blocks (rounded bevelled cubes) in vibrant sky blue
+(#4FA3FF) with soft top-left highlights, arranged together with three sparkling
+faceted gemstones: a bright blue cut diamond, a deep purple multi-point star-burst
+gem, and a glossy red six-point star gem. Chunky, rounded, super glossy plastic
+toy aesthetic, soft studio lighting, gentle drop shadows, high saturation, candy
+colors. Centered and balanced composition for a rounded-square app icon. Clean
+bright vibrant blue radial gradient background (light blue center fading to richer
+blue), bright and cheerful. 3D rendered, polished, premium casual mobile game look.
+Absolutely NO text, NO letters, NO numbers, NO words, NO logos of any kind anywhere
+in the image. Pure illustration only.

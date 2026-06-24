@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "id": "stage-044",
+  "index": 44,
+  "board": {
+    "cols": 8,
+    "rows": 8
+  },
+  "palette": {
+    "b": "#3372B5",
+    "p": "#8E44AD",
+    "g": "#3E9E5E",
+    "y": "#E0A516",
+    "r": "#C0392B",
+    "o": "#D8722C",
+    "c": "#2A93B5"
+  },
+  "preset": [
+    {
+      "x": 1,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "color": "b",
+      "gem": "gem_diamond"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "color": "b"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "color": "b"
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "color": "b"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "color": "b"
+    }
+  ],
+  "items": [],
+  "mission": {
+    "type": "combo",
+    "goals": [
+      {
+        "score": 410
+      },
+      {
+        "collect": [
+          {
+            "gem": "gem_diamond",
+            "count": 10
+          },
+          {
+            "gem": "gem_starburst",
+            "count": 10
+          }
+        ]
+      }
+    ]
+  },
+  "intro": {
+    "title": "Level 44",
+    "hint": "Reach 410 points AND collect the gems!"
+  },
+  "feeder": {
+    "rampPerStage": 0.0237,
+    "midClearWeight": 2.56,
+    "scoreFitsNow": 8,
+    "scoreAllFit": 17,
+    "clearGuaranteeFill": 0.06,
+    "dangerHi": 0.5,
+    "multiClearWeight": 8.5,
+    "sampleCount": 80,
+    "guaranteedSurvive": true,
+    "surviveProbLo": 0.9998,
+    "gemRate": 2.08,
+    "surviveProbHi": 0.997
+  }
+}
