@@ -131,15 +131,15 @@
     "target": [
       {
         "gem": "gem_diamond",
-        "count": 20
+        "count": 18
       },
       {
         "gem": "gem_starburst",
-        "count": 20
+        "count": 18
       },
       {
         "gem": "gem_pentagon",
-        "count": 20
+        "count": 18
       }
     ]
   },

@@ -81,24 +81,24 @@
   "mission": {
     "type": "score",
     "target": {
-      "score": 550
+      "score": 480
     }
   },
   "intro": {
     "title": "Level 25",
-    "hint": "Reach 550 points!"
+    "hint": "Reach 480 points!"
   },
   "feeder": {
     "rampPerStage": 0.0309,
     "midClearWeight": 2.21,
-    "scoreFitsNow": 4.77,
-    "scoreAllFit": 8.41,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
     "clearGuaranteeFill": 0.2,
     "dangerHi": 0.46,
     "multiClearWeight": 4.97,
-    "sampleCount": 35,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.994,
+    "surviveProbLo": 0.995,
     "gemRate": 1.82
   }
 }

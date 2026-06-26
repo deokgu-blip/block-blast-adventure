@@ -101,24 +101,24 @@
   "mission": {
     "type": "score",
     "target": {
-      "score": 1770
+      "score": 860
     }
   },
   "intro": {
     "title": "Level 88",
-    "hint": "Reach 1770 points!"
+    "hint": "Reach 860 points!"
   },
   "feeder": {
     "rampPerStage": 0.0469,
     "midClearWeight": 1.7,
-    "scoreFitsNow": 4.12,
-    "scoreAllFit": 6.81,
-    "clearGuaranteeFill": 0.13,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.58,
     "multiClearWeight": 6.26,
-    "sampleCount": 48,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.991,
+    "surviveProbLo": 0.995,
     "gemRate": 2.68
   }
 }

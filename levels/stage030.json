@@ -106,13 +106,13 @@
     "type": "combo",
     "goals": [
       {
-        "score": 310
+        "score": 150
       },
       {
         "collect": [
           {
             "gem": "gem_diamond",
-            "count": 14
+            "count": 2
           }
         ]
       }
@@ -120,19 +120,19 @@
   },
   "intro": {
     "title": "Level 30",
-    "hint": "Reach 310 points AND collect the gems!"
+    "hint": "Reach 150 points AND collect the gems!"
   },
   "feeder": {
     "rampPerStage": 0.0171,
     "midClearWeight": 2.77,
-    "scoreFitsNow": 4.71,
-    "scoreAllFit": 8.29,
-    "clearGuaranteeFill": 0.19,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.47,
     "multiClearWeight": 5.07,
     "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.994,
+    "surviveProbLo": 0.995,
     "gemRate": 1.89
   }
 }

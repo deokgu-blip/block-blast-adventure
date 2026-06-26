@@ -75,50 +75,30 @@
       "x": 4,
       "y": 7,
       "color": "b"
-    },
-    {
-      "x": 2,
-      "y": 1,
-      "color": "b"
-    },
-    {
-      "x": 5,
-      "y": 1,
-      "color": "b"
-    },
-    {
-      "x": 2,
-      "y": 6,
-      "color": "b"
-    },
-    {
-      "x": 5,
-      "y": 6,
-      "color": "b"
     }
   ],
   "items": [],
   "mission": {
     "type": "score",
     "target": {
-      "score": 1610
+      "score": 340
     }
   },
   "intro": {
     "title": "Level 80",
-    "hint": "Reach 1610 points!"
+    "hint": "Reach 340 points!"
   },
   "feeder": {
     "rampPerStage": 0.0449,
     "midClearWeight": 1.76,
     "scoreFitsNow": 5,
-    "scoreAllFit": 11,
-    "clearGuaranteeFill": 0.12,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.56,
     "multiClearWeight": 5.5,
-    "sampleCount": 44,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.997,
+    "surviveProbLo": 0.995,
     "gemRate": 2.57,
     "surviveProbHi": 0.985
   }

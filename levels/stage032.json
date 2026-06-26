@@ -110,7 +110,7 @@
     "type": "collect",
     "target": {
       "gem": "gem_diamond_green",
-      "count": 33
+      "count": 32
     }
   },
   "intro": {

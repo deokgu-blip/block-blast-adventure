@@ -166,14 +166,14 @@
   "feeder": {
     "rampPerStage": 0.0124,
     "midClearWeight": 2.92,
-    "scoreFitsNow": 4.82,
-    "scoreAllFit": 8.54,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
     "clearGuaranteeFill": 0.2,
     "dangerHi": 0.45,
     "multiClearWeight": 4.87,
-    "sampleCount": 34,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.994,
+    "surviveProbLo": 0.995,
     "gemRate": 1.75
   }
 }

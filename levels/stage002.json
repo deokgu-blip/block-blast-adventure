@@ -106,7 +106,7 @@
     "type": "collect",
     "target": {
       "gem": "gem_starburst",
-      "count": 3
+      "count": 8
     }
   },
   "intro": {

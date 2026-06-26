@@ -101,24 +101,24 @@
   "mission": {
     "type": "score",
     "target": {
-      "score": 700
+      "score": 220
     }
   },
   "intro": {
     "title": "Level 33",
-    "hint": "Reach 700 points!"
+    "hint": "Reach 220 points!"
   },
   "feeder": {
     "rampPerStage": 0.0329,
     "midClearWeight": 2.15,
-    "scoreFitsNow": 4.68,
-    "scoreAllFit": 8.21,
-    "clearGuaranteeFill": 0.19,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.48,
     "multiClearWeight": 5.13,
     "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.993,
+    "surviveProbLo": 0.995,
     "gemRate": 1.93
   }
 }

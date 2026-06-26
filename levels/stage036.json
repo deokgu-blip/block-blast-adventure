@@ -101,12 +101,12 @@
   "mission": {
     "type": "score",
     "target": {
-      "score": 760
+      "score": 680
     }
   },
   "intro": {
     "title": "Level 36",
-    "hint": "Reach 760 points!"
+    "hint": "Reach 680 points!"
   },
   "feeder": {
     "rampPerStage": 0.0337,

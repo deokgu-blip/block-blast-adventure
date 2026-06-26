@@ -126,7 +126,7 @@
     "type": "combo",
     "goals": [
       {
-        "score": 410
+        "score": 60
       },
       {
         "collect": [
@@ -144,19 +144,19 @@
   },
   "intro": {
     "title": "Level 44",
-    "hint": "Reach 410 points AND collect the gems!"
+    "hint": "Reach 60 points AND collect the gems!"
   },
   "feeder": {
     "rampPerStage": 0.0237,
     "midClearWeight": 2.56,
-    "scoreFitsNow": 8,
-    "scoreAllFit": 17,
-    "clearGuaranteeFill": 0.06,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.5,
     "multiClearWeight": 8.5,
-    "sampleCount": 80,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.9998,
+    "surviveProbLo": 0.995,
     "gemRate": 2.08,
     "surviveProbHi": 0.997
   }

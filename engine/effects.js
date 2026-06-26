@@ -16,7 +16,7 @@
 // no per-frame allocation, elements are recycled, and the loop stops when idle so
 // it never leaks. Praise/combo/popup are short-lived DOM that self-remove.
 
-import { gemFileFor } from './renderer.js?v=20260624123400';
+import { gemFileFor } from './renderer.js';
 
 // asset paths are RELATIVE (static-servable + inline-friendly, GLOBAL A3).
 const FX = 'assets/effects/';

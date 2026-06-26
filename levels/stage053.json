@@ -130,7 +130,7 @@
     "type": "collect",
     "target": {
       "gem": "gem_star6",
-      "count": 53
+      "count": 33
     }
   },
   "intro": {
@@ -140,14 +140,14 @@
   "feeder": {
     "rampPerStage": 0.0279,
     "midClearWeight": 2.42,
-    "scoreFitsNow": 4.48,
-    "scoreAllFit": 7.7,
-    "clearGuaranteeFill": 0.17,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.51,
     "multiClearWeight": 5.54,
-    "sampleCount": 40,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.992,
+    "surviveProbLo": 0.995,
     "gemRate": 2.2
   }
 }

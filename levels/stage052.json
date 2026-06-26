@@ -101,24 +101,24 @@
   "mission": {
     "type": "score",
     "target": {
-      "score": 1070
+      "score": 650
     }
   },
   "intro": {
     "title": "Level 52",
-    "hint": "Reach 1070 points!"
+    "hint": "Reach 650 points!"
   },
   "feeder": {
     "rampPerStage": 0.0378,
     "midClearWeight": 1.99,
-    "scoreFitsNow": 7,
-    "scoreAllFit": 15,
-    "clearGuaranteeFill": 0.08,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.51,
     "multiClearWeight": 7.5,
-    "sampleCount": 68,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.9995,
+    "surviveProbLo": 0.995,
     "gemRate": 2.19,
     "surviveProbHi": 0.995
   }

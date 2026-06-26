@@ -81,24 +81,24 @@
   "mission": {
     "type": "score",
     "target": {
-      "score": 880
+      "score": 810
     }
   },
   "intro": {
     "title": "Level 42",
-    "hint": "Reach 880 points!"
+    "hint": "Reach 810 points!"
   },
   "feeder": {
     "rampPerStage": 0.0352,
     "midClearWeight": 2.07,
-    "scoreFitsNow": 4.59,
-    "scoreAllFit": 7.98,
-    "clearGuaranteeFill": 0.18,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.49,
     "multiClearWeight": 5.32,
-    "sampleCount": 38,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.993,
+    "surviveProbLo": 0.995,
     "gemRate": 2.05
   }
 }

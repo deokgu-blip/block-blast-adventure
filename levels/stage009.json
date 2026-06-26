@@ -106,7 +106,7 @@
     "type": "collect",
     "target": {
       "gem": "gem_pentagon",
-      "count": 10
+      "count": 6
     }
   },
   "intro": {
@@ -116,12 +116,12 @@
   "feeder": {
     "rampPerStage": 0.0073,
     "midClearWeight": 3.09,
-    "scoreFitsNow": 4.93,
-    "scoreAllFit": 8.82,
-    "clearGuaranteeFill": 0.21,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.43,
     "multiClearWeight": 4.64,
-    "sampleCount": 31,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
     "surviveProbLo": 0.995,
     "gemRate": 1.6

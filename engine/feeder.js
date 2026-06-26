@@ -22,8 +22,8 @@
 // 3-layer split (GLOBAL A6): this is pure LOGIC. It emits no visuals; the caller
 // (game.js) fires onDanger/onRescue events for the look layer.
 
-import { PIECES, pieceArea, isBigBox, pieceBounds } from './pieces.js?v=20260624123400';
-import { shapeColorKey } from './colors.js?v=20260624123400';
+import { PIECES, pieceArea, isBigBox, pieceBounds } from './pieces.js';
+import { shapeColorKey } from './colors.js';
 
 // ── metrics (§4.1) ──────────────────────────────────────────────────────────
 // Computed once per feed from the board; returned for telemetry / events.

@@ -8,12 +8,12 @@
 //
 // Deterministic: all randomness is in the seeded feeder RNG. No Date.now() here.
 
-import { Board } from './board.js?v=20260624123400';
-import { feedTray, computeMetrics, dangerScore } from './feeder.js?v=20260624123400';
-import { mergeConfig, DEFAULT_CONFIG } from './config.js?v=20260624123400';
-import { PIECE_BY_ID } from './pieces.js?v=20260624123400';
-import { shapeColorKey } from './colors.js?v=20260624123400';
-import { readPresetCell, collectTargets, comboGoals } from './schema.js?v=20260624123400';
+import { Board } from './board.js';
+import { feedTray, computeMetrics, dangerScore } from './feeder.js';
+import { mergeConfig, DEFAULT_CONFIG } from './config.js';
+import { PIECE_BY_ID } from './pieces.js';
+import { shapeColorKey } from './colors.js';
+import { readPresetCell, collectTargets, comboGoals } from './schema.js';
 
 export class Game {
   // level = normalized level (from schema.validateLevel), rng = seeded RNG.
@@ -257,11 +257,13 @@ export class Game {
       // mission progress from clears (collect / lines / clearCells / score handled below)
       this._applyClearToMission(clearedInfo, lineCount);
     } else {
-      // COMBO GRACE (USER REQ 2026-06-22): a single non-clearing placement does NOT break the
-      // combo. It only breaks after 3 CONSECUTIVE no-clear placements — so clearing at least once
-      // every 3 moves SUSTAINS (and grows) the combo, which is how big combos/scores build up.
+      // COMBO RESET (USER REQ 2026-06-26: "콤보 리셋 버그 고쳐"): a non-clearing placement breaks the
+      // combo immediately (combo = consecutive clears, classic block-puzzle behaviour).
+      // NOTE: this REVERSES the earlier 2026-06-22 "3-move grace" (which let combos build over a few
+      // moves). Combo is feedback-only (no score multiplier in Adventure), so this changes the combo
+      // BADGE/praise cadence, not balance. To restore the grace, gate this on `noClearStreak >= 3`.
       this.noClearStreak++;
-      if (this.noClearStreak >= 3) this.combo = 0;
+      this.combo = 0;
       this.emit('onPlace', { cells: filled, color: piece.color });
     }
 

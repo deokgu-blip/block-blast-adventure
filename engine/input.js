@@ -15,7 +15,7 @@
 // ghost snaps to a NEW valid placement (preview-snap moment), and a 'light' buzz on a
 // committed drop (place). haptic() is internally throttled so dragging across cells
 // doesn't machine-gun; we also only tick when the snapped cell actually CHANGES.
-import { haptic } from './hostbridge.js?v=20260624123400';
+import { haptic } from './hostbridge.js';
 
 export class DragInput {
   constructor({ stage, boardCanvas, traySlots, renderer, game, onPlaced, onChange, tutorial, effects }) {

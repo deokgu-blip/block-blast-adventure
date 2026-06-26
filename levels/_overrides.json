@@ -1,4 +1,27 @@
 {
+  "2": {
+    "gemTotal": 8
+  },
+  "3": {
+    "gemTotal": 5,
+    "density": 14,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
+  "4": {
+    "gemTotal": 9
+  },
+  "5": {
+    "gemTotal": 7
+  },
+  "6": {
+    "gemTotal": 9
+  },
   "8": {
     "_fl": 1,
     "feeder": {
@@ -9,6 +32,58 @@
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
       "scoreAllFit": 11
+    }
+  },
+  "9": {
+    "gemTotal": 6,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
+  "16": {
+    "gemTotal": 16,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
+  "18": {
+    "density": 14,
+    "gemTotal": 18,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
+  "20": {
+    "density": 14,
+    "gemTotal": 21,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
+  "21": {
+    "gemTotal": 21,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
   },
   "23": {
@@ -23,16 +98,37 @@
       "scoreAllFit": 13
     }
   },
+  "25": {
+    "score": 480,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
   "27": {
     "_fl": 2,
     "feeder": {
-      "surviveProbLo": 0.999,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.99,
-      "sampleCount": 56,
-      "clearGuaranteeFill": 0.1,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 6.5,
-      "scoreFitsNow": 6,
-      "scoreAllFit": 13
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "gemTotal": 20
+  },
+  "28": {
+    "gemTotal": 14,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
   },
   "29": {
@@ -45,6 +141,17 @@
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
       "scoreAllFit": 11
+    }
+  },
+  "30": {
+    "score": 150,
+    "gemTotal": 2,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
   },
   "31": {
@@ -69,6 +176,18 @@
       "multiClearWeight": 6.5,
       "scoreFitsNow": 6,
       "scoreAllFit": 13
+    },
+    "gemTotal": 32
+  },
+  "33": {
+    "density": 14,
+    "score": 220,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
   },
   "34": {
@@ -83,6 +202,16 @@
       "scoreAllFit": 13
     }
   },
+  "35": {
+    "gemTotal": 17,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
   "36": {
     "_fl": 1,
     "feeder": {
@@ -93,31 +222,35 @@
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
       "scoreAllFit": 11
-    }
+    },
+    "score": 680,
+    "density": 15
   },
   "37": {
     "_fl": 1,
     "feeder": {
-      "surviveProbLo": 0.997,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.985,
-      "sampleCount": 44,
-      "clearGuaranteeFill": 0.12,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
-      "scoreAllFit": 11
-    }
+      "scoreAllFit": 10
+    },
+    "gemTotal": 37
   },
   "38": {
     "_fl": 2,
     "feeder": {
-      "surviveProbLo": 0.999,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.99,
-      "sampleCount": 56,
-      "clearGuaranteeFill": 0.1,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 6.5,
-      "scoreFitsNow": 6,
-      "scoreAllFit": 13
-    }
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "score": 240
   },
   "40": {
     "_fl": 2,
@@ -131,17 +264,41 @@
       "scoreAllFit": 13
     }
   },
+  "42": {
+    "score": 810,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
+  "43": {
+    "density": 14,
+    "gemTotal": 24,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
   "44": {
     "_fl": 4,
     "feeder": {
-      "surviveProbLo": 0.9998,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.997,
-      "sampleCount": 80,
-      "clearGuaranteeFill": 0.06,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 8.5,
-      "scoreFitsNow": 8,
-      "scoreAllFit": 17
-    }
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "density": 14,
+    "score": 60,
+    "gemTotal": 19
   },
   "45": {
     "_fl": 1,
@@ -155,28 +312,62 @@
       "scoreAllFit": 11
     }
   },
+  "46": {
+    "gemTotal": 46,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
   "49": {
     "_fl": 4,
     "feeder": {
-      "surviveProbLo": 0.9998,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.997,
-      "sampleCount": 80,
-      "clearGuaranteeFill": 0.06,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 8.5,
-      "scoreFitsNow": 8,
-      "scoreAllFit": 17
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "gemTotal": 49
+  },
+  "50": {
+    "density": 14,
+    "score": 540,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
   },
   "52": {
     "_fl": 3,
     "feeder": {
-      "surviveProbLo": 0.9995,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.995,
-      "sampleCount": 68,
-      "clearGuaranteeFill": 0.08,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 7.5,
-      "scoreFitsNow": 7,
-      "scoreAllFit": 15
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "density": 14,
+    "score": 650
+  },
+  "53": {
+    "gemTotal": 33,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
   },
   "54": {
@@ -194,38 +385,65 @@
   "56": {
     "_fl": 1,
     "feeder": {
-      "surviveProbLo": 0.997,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.985,
-      "sampleCount": 44,
-      "clearGuaranteeFill": 0.12,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
-      "scoreAllFit": 11
+      "scoreAllFit": 10
+    },
+    "gemTotal": 37
+  },
+  "58": {
+    "gemTotal": 57,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
+  },
+  "59": {
+    "gemTotal": 55
   },
   "60": {
     "_fl": 1,
     "feeder": {
-      "surviveProbLo": 0.997,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.985,
-      "sampleCount": 44,
-      "clearGuaranteeFill": 0.12,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
-      "scoreAllFit": 11
+      "scoreAllFit": 10
+    },
+    "gemTotal": 59
+  },
+  "61": {
+    "gemTotal": 42,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
   },
   "63": {
     "_fl": 2,
     "feeder": {
-      "surviveProbLo": 0.999,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.99,
-      "sampleCount": 56,
-      "clearGuaranteeFill": 0.1,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 6.5,
-      "scoreFitsNow": 6,
-      "scoreAllFit": 13
-    }
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "density": 14,
+    "score": 1000
   },
   "66": {
     "_fl": 1,
@@ -266,14 +484,16 @@
   "69": {
     "_fl": 2,
     "feeder": {
-      "surviveProbLo": 0.999,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.99,
-      "sampleCount": 56,
-      "clearGuaranteeFill": 0.1,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 6.5,
-      "scoreFitsNow": 6,
-      "scoreAllFit": 13
-    }
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "score": 370,
+    "gemTotal": 31
   },
   "70": {
     "_fl": 3,
@@ -290,26 +510,28 @@
   "73": {
     "_fl": 3,
     "feeder": {
-      "surviveProbLo": 0.9995,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.995,
-      "sampleCount": 68,
-      "clearGuaranteeFill": 0.08,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 7.5,
-      "scoreFitsNow": 7,
-      "scoreAllFit": 15
-    }
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "gemTotal": 36
   },
   "74": {
     "_fl": 1,
     "feeder": {
-      "surviveProbLo": 0.997,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.985,
-      "sampleCount": 44,
-      "clearGuaranteeFill": 0.12,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
-      "scoreAllFit": 11
-    }
+      "scoreAllFit": 10
+    },
+    "gemTotal": 37
   },
   "75": {
     "_fl": 4,
@@ -362,26 +584,30 @@
   "79": {
     "_fl": 1,
     "feeder": {
-      "surviveProbLo": 0.997,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.985,
-      "sampleCount": 44,
-      "clearGuaranteeFill": 0.12,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
-      "scoreAllFit": 11
-    }
+      "scoreAllFit": 10
+    },
+    "density": 14,
+    "score": 330
   },
   "80": {
     "_fl": 1,
     "feeder": {
-      "surviveProbLo": 0.997,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.985,
-      "sampleCount": 44,
-      "clearGuaranteeFill": 0.12,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
-      "scoreAllFit": 11
-    }
+      "scoreAllFit": 10
+    },
+    "density": 14,
+    "score": 340
   },
   "81": {
     "_fl": 1,
@@ -395,28 +621,53 @@
       "scoreAllFit": 11
     }
   },
+  "82": {
+    "gemTotal": 81,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
   "83": {
     "_fl": 1,
     "feeder": {
-      "surviveProbLo": 0.997,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.985,
-      "sampleCount": 44,
-      "clearGuaranteeFill": 0.12,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
-      "scoreAllFit": 11
-    }
+      "scoreAllFit": 10
+    },
+    "density": 14,
+    "gemTotal": 83
   },
   "84": {
     "_fl": 2,
     "feeder": {
-      "surviveProbLo": 0.999,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.99,
-      "sampleCount": 56,
-      "clearGuaranteeFill": 0.1,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 6.5,
-      "scoreFitsNow": 6,
-      "scoreAllFit": 13
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "density": 14,
+    "gemTotal": 83
+  },
+  "88": {
+    "density": 14,
+    "score": 860,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
   },
   "90": {
@@ -443,28 +694,61 @@
       "scoreAllFit": 11
     }
   },
+  "93": {
+    "density": 18,
+    "score": 600,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
   "96": {
     "_fl": 3,
     "feeder": {
-      "surviveProbLo": 0.9995,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.995,
-      "sampleCount": 68,
-      "clearGuaranteeFill": 0.08,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 7.5,
-      "scoreFitsNow": 7,
-      "scoreAllFit": 15
-    }
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    },
+    "gemTotal": 95
   },
   "98": {
     "_fl": 1,
     "feeder": {
-      "surviveProbLo": 0.997,
+      "surviveProbLo": 0.995,
       "surviveProbHi": 0.985,
-      "sampleCount": 44,
-      "clearGuaranteeFill": 0.12,
+      "sampleCount": 36,
+      "clearGuaranteeFill": 0.2,
       "multiClearWeight": 5.5,
       "scoreFitsNow": 5,
-      "scoreAllFit": 11
+      "scoreAllFit": 10
+    },
+    "gemTotal": 98
+  },
+  "99": {
+    "gemTotal": 79,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
+    }
+  },
+  "100": {
+    "gemTotal": 99,
+    "feeder": {
+      "surviveProbLo": 0.995,
+      "clearGuaranteeFill": 0.2,
+      "sampleCount": 36,
+      "scoreFitsNow": 5,
+      "scoreAllFit": 10
     }
   }
 }

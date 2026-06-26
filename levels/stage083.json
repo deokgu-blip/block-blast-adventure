@@ -123,26 +123,6 @@
       "x": 4,
       "y": 4,
       "color": "b"
-    },
-    {
-      "x": 2,
-      "y": 3,
-      "color": "b"
-    },
-    {
-      "x": 5,
-      "y": 3,
-      "color": "b"
-    },
-    {
-      "x": 2,
-      "y": 4,
-      "color": "b"
-    },
-    {
-      "x": 5,
-      "y": 4,
-      "color": "b"
     }
   ],
   "items": [],
@@ -171,13 +151,13 @@
     "rampPerStage": 0.042,
     "midClearWeight": 1.96,
     "scoreFitsNow": 5,
-    "scoreAllFit": 11,
-    "clearGuaranteeFill": 0.12,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.57,
     "multiClearWeight": 5.5,
-    "sampleCount": 44,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.997,
+    "surviveProbLo": 0.995,
     "gemRate": 2.62,
     "surviveProbHi": 0.985
   }

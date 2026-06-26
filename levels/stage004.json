@@ -126,7 +126,7 @@
     "type": "collect",
     "target": {
       "gem": "gem_diamond",
-      "count": 5
+      "count": 9
     }
   },
   "intro": {

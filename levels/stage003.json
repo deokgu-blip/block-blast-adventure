@@ -127,11 +127,11 @@
     "target": [
       {
         "gem": "gem_pentagon",
-        "count": 2
+        "count": 3
       },
       {
         "gem": "gem_starburst",
-        "count": 2
+        "count": 3
       }
     ]
   },
@@ -142,12 +142,12 @@
   "feeder": {
     "rampPerStage": 0.0045,
     "midClearWeight": 3.18,
-    "scoreFitsNow": 4.99,
-    "scoreAllFit": 8.97,
-    "clearGuaranteeFill": 0.22,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.42,
     "multiClearWeight": 4.52,
-    "sampleCount": 30,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
     "surviveProbLo": 0.995,
     "gemRate": 1.51

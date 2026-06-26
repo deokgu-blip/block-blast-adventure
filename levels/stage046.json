@@ -130,7 +130,7 @@
     "type": "collect",
     "target": {
       "gem": "gem_diamond",
-      "count": 47
+      "count": 46
     }
   },
   "intro": {
@@ -140,14 +140,14 @@
   "feeder": {
     "rampPerStage": 0.0247,
     "midClearWeight": 2.53,
-    "scoreFitsNow": 4.55,
-    "scoreAllFit": 7.88,
-    "clearGuaranteeFill": 0.18,
+    "scoreFitsNow": 5,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.5,
     "multiClearWeight": 5.4,
-    "sampleCount": 39,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.993,
+    "surviveProbLo": 0.995,
     "gemRate": 2.11
   }
 }

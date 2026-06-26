@@ -167,7 +167,12 @@ export class AudioManager {
     // heavy work (that was the old jank). Listens on all gestures since it's cheap either way.
     const onGesture = () => {
       if (!this.unlocked) { this.unlockEager(); return; }         // browser fallback: finalize on 1st gesture
-      if (this.ctx && this.ctx.state !== 'running') { try { this.ctx.resume(); } catch (_) {} }  // suspend recovery
+      // suspend recovery + BGM start (fix 2026-06-26): if already unlocked at boot but the ctx is
+      // suspended (autoplay-blocked at boot), the gesture both resumes the ctx AND starts the BGM
+      // loop (which boot couldn't, lacking a user gesture). _startBgm is idempotent → no jank.
+      if (this.ctx && this.ctx.state !== 'running') {
+        try { this.ctx.resume().then(() => { if (!this.muted) this._startBgm(); }).catch(() => {}); } catch (_) {}
+      } else if (!this.muted) { this._startBgm(); }
     };
     for (const t of ['pointerdown', 'touchstart', 'pointerup', 'touchend', 'click', 'keydown']) target.addEventListener(t, onGesture, true);
   }
@@ -198,6 +203,10 @@ export class AudioManager {
     }
     if (this.ctx.state === 'suspended') { try { await this.ctx.resume(); } catch (_) { /* ignore */ } }
     this.unlocked = true;
+    // START BGM here — AFTER unlock completes (fix 2026-06-26): unlockEager() called _startBgm()
+    // synchronously BEFORE this async resume resolved, so `unlocked` was still false and BGM never
+    // started. Starting it here (idempotent) guarantees the loop kicks off once the ctx is running.
+    if (!this.muted) this._startBgm();
   }
 
   // iOS SILENT-SWITCH workaround (㉖): by default iOS routes WebAudio through the "ringer"

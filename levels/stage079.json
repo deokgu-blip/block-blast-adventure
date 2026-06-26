@@ -75,50 +75,30 @@
       "x": 4,
       "y": 7,
       "color": "b"
-    },
-    {
-      "x": 2,
-      "y": 3,
-      "color": "b"
-    },
-    {
-      "x": 5,
-      "y": 3,
-      "color": "b"
-    },
-    {
-      "x": 2,
-      "y": 4,
-      "color": "b"
-    },
-    {
-      "x": 5,
-      "y": 4,
-      "color": "b"
     }
   ],
   "items": [],
   "mission": {
     "type": "score",
     "target": {
-      "score": 1590
+      "score": 330
     }
   },
   "intro": {
     "title": "Level 79",
-    "hint": "Reach 1590 points!"
+    "hint": "Reach 330 points!"
   },
   "feeder": {
     "rampPerStage": 0.0446,
     "midClearWeight": 1.77,
     "scoreFitsNow": 5,
-    "scoreAllFit": 11,
-    "clearGuaranteeFill": 0.12,
+    "scoreAllFit": 10,
+    "clearGuaranteeFill": 0.2,
     "dangerHi": 0.56,
     "multiClearWeight": 5.5,
-    "sampleCount": 44,
+    "sampleCount": 36,
     "guaranteedSurvive": true,
-    "surviveProbLo": 0.997,
+    "surviveProbLo": 0.995,
     "gemRate": 2.56,
     "surviveProbHi": 0.985
   }
